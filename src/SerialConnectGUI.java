@@ -27,38 +27,38 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.SpinnerListModel;
+import javax.swing.SwingUtilities;
 
-public class SerialConnectGUI extends JFrame implements ActionListener
+public class SerialConnectGUI extends JFrame implements ActionListener, MessageIO
 {
-//	private ChannelController channelController = null;
-//	
-//	private ComponentsEnability groupedButtons = null;
-
-	private SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD" } );
+//	private SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD" } );
 	private JSpinner baudBox = null;
 	
-	private SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
+//	private SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
 	private JSpinner stopBitBox = null;
 	
-	private SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd" } );
+//	private SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd" } );
 	private JSpinner parityBox = null;
 	
-	private SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
+//	private SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
 	private JSpinner dataBitsBox = null;
 	
-	private SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9" } );
+//	private SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9" } );
 	private JSpinner comportBox = null;
 
-	private SerialConnect serialConnect = null;
+	private JTextArea textArea = null;
 	
-//	public SerialConnectGUI()
-//	{
-//	}
+	private JCheckBox autoScroll = null;
+	
+	private SerialConnect serialConnect = null;
 	
 	public SerialConnectGUI()
 	{
@@ -72,7 +72,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener
 		setLayout(new BorderLayout());
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(240, 210);
+		setSize(300, 360);
 				
 		initComponents();
 		
@@ -81,14 +81,23 @@ public class SerialConnectGUI extends JFrame implements ActionListener
 	
 	private void initComponents()
 	{
-		baudBox = new JSpinner(model1);
-		stopBitBox = new JSpinner(model2);
-		parityBox = new JSpinner(model3);
+		SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD" } );
+		SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
+		SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd" } );
+		SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
+		SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9" } );
+
+		textArea = new JTextArea("input");
+		
+		autoScroll = new JCheckBox("autoscroll", true);
+		
+		baudBox = new JSpinner(model1);	
+		stopBitBox = new JSpinner(model2);	
+		parityBox = new JSpinner(model3);	
 		dataBitsBox = new JSpinner(model4);
 		comportBox = new JSpinner(model5);
 		
 		setDefaultValues();
-		
 		
 		JPanel swap = null;
 		JButton btn = null;
@@ -144,10 +153,14 @@ public class SerialConnectGUI extends JFrame implements ActionListener
 		btn.addActionListener(this);
 		hBox.add(btn);
 
+		hBox.add(autoScroll);
+		
 		vBox.add(Box.createVerticalStrut(5));
 		vBox.add(hBox);
 		
 		add(vBox, BorderLayout.NORTH);
+		
+		add(new JScrollPane(textArea), BorderLayout.CENTER);
 	}
 	
 	private void setDefaultValues()
@@ -169,18 +182,13 @@ public class SerialConnectGUI extends JFrame implements ActionListener
 			{
 				System.out.println("START serial-connection");
 				
-//				channelController.getIoController().stopIOReader();
-//				
-//				groupedButtons.setButtonState(false);
-				
 				String portName = (String)comportBox.getValue();
 				int baudRate = Integer.parseInt(((String)baudBox.getValue()).split(" ")[0]);
 				char parityTyp = ((String)parityBox.getValue()).charAt(0);
 				int dataBits = Integer.parseInt(((String)dataBitsBox.getValue()));
 				float stopBits = Integer.parseInt(((String)stopBitBox.getValue()).split(" ")[0]);
 				
-				serialConnect = new SerialConnect(); // channelController.getIoController());
-	//			channelController.getPlotterModel().setSerialConnect(serialConnect);
+				serialConnect = new SerialConnect();
 				
 				serialConnect.initSerialConnect(portName, baudRate, parityTyp, dataBits, stopBits);
 				serialConnect.startConnection();
@@ -201,6 +209,22 @@ public class SerialConnectGUI extends JFrame implements ActionListener
 		{
 			setDefaultValues();
 		}
+	}
+	
+	public void message(final String s) {
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			public void run() {
+				
+				textArea.append(s);
+				
+				if (autoScroll.isSelected())
+				{
+					textArea.setCaretPosition(textArea.getDocument().getLength());
+				}
+			}
+		});
 	}
 	
 	public static void main(String[] args)

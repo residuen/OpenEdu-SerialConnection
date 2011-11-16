@@ -28,6 +28,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import gnu.io.UnsupportedCommOperationException;
 
+import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -64,7 +65,7 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	// Die Objektvariable gInterface erzeugt fuer das BBC-Messgeraet aus dem Datenstrom den übertragenen Wert
 	private GrabberInterface gInterface = readerFactory.getInstance(ReaderFactory.BBC_DEVICE);
   		
-
+	private Component component = null;
 	
 //	HashMap<String, String> cmdMap = new HashMap<String, String>();
 	
@@ -228,6 +229,8 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 		  			System.out.println( gInterface.buildCurrentStream(str.toCharArray(), dataBits) );
 		  				  		
 		  		System.out.println(" - "+str);
+		  		
+		  		((MessageIO)component).message(str);
 			}			
 		}
 	}
@@ -305,5 +308,9 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 			retValue[i] = swap.get(i);
 		
 		return retValue;
+	}
+	
+	public void setComponent(Component component) {
+		this.component = component;
 	}
 }

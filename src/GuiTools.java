@@ -23,10 +23,6 @@ public class GuiTools
 	private static final String WIN_LF   = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 	private static final String SYS_LF   = UIManager.getSystemLookAndFeelClassName();
 	private static final String CROSS_LF = UIManager.getCrossPlatformLookAndFeelClassName();
-	
-//	private static final Dimension WIN_OFFSET = new Dimension(3, 5);
-//	private static final Dimension LIN_OFFSET = new Dimension(8, 5);
-//	private static final Dimension MAC_OFFSET = new Dimension(0, 0);
 
 	public static void setLookAndFeel(String args[])
 	{

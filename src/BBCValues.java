@@ -1,42 +1,51 @@
+/*
+BBCValues: Parsen und transformieren der Messwerte des BBC GOERZ METRAWATT
 
-public class BBCValues implements GrabberInterface
+Copyright (C) 2011 Karsten Bettray
+
+Dieses Programm ist freie Software. Sie koennen es unter den Bedingungen der GNU General Public License,
+wie von der Free Software Foundation veroeffentlicht, weitergeben und/oder modifizieren, entweder gemaess
+Version 3 der Lizenz oder (nach Ihrer Option) jeder spaeteren Version.
+Die Veroeffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen von Nutzen sein wird, aber
+OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FUER
+EINEN BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.
+Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Programm erhalten haben.
+Falls nicht, siehe <http://www.gnu.org/licenses/>.
+*/
+
+public class BBCValues // implements GrabberInterface
 {
 
-	public GrabberInterface grabValue(int typ)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public GrabberInterface grabValue(int typ)
+//	{
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
-	public String buildCurrentStream(char[] inputChars, int dataBits)
+	public static String buildCurrentStream(char[] inputChars, int dataBits)
 	{
 		return buildValue(inputChars, dataBits);
 	}
 	
-  	private String buildValue(char[] inputChars, int dataBits)
+	public static String buildCurrentStream(char[] inputChars)
+	{
+		return buildValue(inputChars, 8);
+	}
+	
+  	private static String buildValue(char[] inputChars, int dataBits)
   	{
-  		int komma = 0;
-  		String retValue = "";
-  		String hexStr = "";
+   		String hexStr = "";
   		
   		StringBuffer retStr = new StringBuffer();
   		
-  		// gegebenenfalls Anzahl Datenbits gegen Array-Länge verrechnen
-  		for(int i=0; i<inputChars.length; i++) // for(int i=0; i<dataBits; i++)
-  		{
-  			hexStr = Integer.toHexString(inputChars[i]);
-
-  			if(hexStr.equals("ae"))
-  				komma = i;
-  		}
-  		
   		hexStr = Integer.toHexString(inputChars[1]);
+  		
+  		// Testen, ob Ausgabe von Messgeraet gueltig ist
   		if(hexStr.equals("4f"))
   		{
-  			retValue = null;
-  			retStr = null;
+   			retStr = null;
   		}
-  		else
+  		else	// wenn ja, Vorzeichen abfragen und setzen
   		{
   			if(hexStr.equals("20"))
   				retStr.append("");
@@ -44,21 +53,20 @@ public class BBCValues implements GrabberInterface
   				retStr.append("-");
   		}
   		
-  		for(int i=2; i<komma; i++)
+  		// durch das char-Array laufen und zeichenweise
+  		// die Ziffern fuer den Messwert extrahieren
+  		// und in String schreiben
+  		for(int i=2; i<inputChars.length; i++)
   		{
   			hexStr = Integer.toHexString(inputChars[i]);
  
-  			retStr.append(hexStr.charAt(1));
+  			// Testen, ob ein komma gesendet wurde
+  			if(!hexStr.contains("ae"))
+  				retStr.append(hexStr.charAt(1));	// Komma in String schreiben
+  			else
+  				retStr.append(".");					// Ziffer in String schreiben
   		}
-  		retValue +=".";
-  		for(int i=komma+1; i<inputChars.length; i++)
-  		{
-  			hexStr = Integer.toHexString(inputChars[i]);
- 
-  			retStr.append(hexStr.charAt(1));
-  		}
-  		
-  		return retStr.toString();
-  	}
 
+  		return retStr.toString();	// Empfangene Zahl zurueckgeben
+  	}
 }

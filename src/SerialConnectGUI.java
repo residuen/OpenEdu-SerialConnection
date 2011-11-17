@@ -1,25 +1,18 @@
-/**
- * JOscilloscope - a plugable software-oscilloskope (supported by: http://www.wvs-koeln.de)
- * 
- * Class: SerialConnectGUI.java
- * 
- * @author Karsten Bettray
- * &copy; 2007 Karsten Bettray
- * 
- *  * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+/*
+SerialConnectGUI: GUI zum Einlesen von Daten per RS232
 
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+Copyright (C) 2011 Karsten Bettray
+
+Dieses Programm ist freie Software. Sie koennen es unter den Bedingungen der GNU General Public License,
+wie von der Free Software Foundation veroeffentlicht, weitergeben und/oder modifizieren, entweder gemaess
+Version 3 der Lizenz oder (nach Ihrer Option) jeder spaeteren Version.
+Die Veroeffentlichung dieses Programms erfolgt in der Hoffnung, dass es Ihnen von Nutzen sein wird, aber
+OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FUER
+EINEN BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.
+Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Programm erhalten haben.
+Falls nicht, siehe <http://www.gnu.org/licenses/>.
 */
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -39,23 +32,15 @@ import javax.swing.SwingUtilities;
 
 public class SerialConnectGUI extends JFrame implements ActionListener, MessageIO
 {
-//	private SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD" } );
-	private JSpinner baudBox = null;
-	
-//	private SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
+	private JSpinner baudBox = null;	
 	private JSpinner stopBitBox = null;
-	
-//	private SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd" } );
 	private JSpinner parityBox = null;
-	
-//	private SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
 	private JSpinner dataBitsBox = null;
-	
-//	private SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9" } );
 	private JSpinner comportBox = null;
 
 	private JTextArea textArea = null;
 	
+	private JCheckBox showValues = null;
 	private JCheckBox autoScroll = null;
 	
 	private SerialConnect serialConnect = null;
@@ -72,7 +57,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		setLayout(new BorderLayout());
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(300, 360);
+		setSize(360, 360);
 				
 		initComponents();
 		
@@ -87,8 +72,9 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
 		SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9" } );
 
-		textArea = new JTextArea("input");
+		textArea = new JTextArea("");
 		
+		showValues = new JCheckBox("Values", true);
 		autoScroll = new JCheckBox("autoscroll", true);
 		
 		baudBox = new JSpinner(model1);	
@@ -153,6 +139,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		btn.addActionListener(this);
 		hBox.add(btn);
 
+		hBox.add(showValues);
 		hBox.add(autoScroll);
 		
 		vBox.add(Box.createVerticalStrut(5));
@@ -165,7 +152,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	
 	private void setDefaultValues()
 	{
-		comportBox.setValue("COM1");
+		comportBox.setValue("COM4");
 		baudBox.setValue("9600 BAUD");
 		stopBitBox.setValue("1 Bit");
 		parityBox.setValue("Odd");
@@ -190,6 +177,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 				
 				serialConnect = new SerialConnect();
 				
+				serialConnect.setComponent(this);
 				serialConnect.initSerialConnect(portName, baudRate, parityTyp, dataBits, stopBits);
 				serialConnect.startConnection();
 			}
@@ -217,11 +205,14 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 			
 			public void run() {
 				
-				textArea.append(s);
-				
-				if (autoScroll.isSelected())
+				if(showValues.isSelected())
 				{
-					textArea.setCaretPosition(textArea.getDocument().getLength());
+					textArea.append(s+"\n");
+
+					if(autoScroll.isSelected())
+					{
+						textArea.setCaretPosition(textArea.getDocument().getLength());
+					}
 				}
 			}
 		});
@@ -231,5 +222,4 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	{
 		new SerialConnectGUI();
 	}
-
 }

@@ -78,6 +78,10 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	
 	private boolean interrupted = false;
 	
+	// Beinhaltet den Parser, passend zur Datenquelle
+	private GrabberInterface grab = new ArduinoValues();
+  		
+	
 	public SerialConnect()
 	{
 //		initSerialConnect(portName, baudRate, parityTyp, dataBits, stopBits); // PORT, BAUDRATE, PARITY-TYP, DATABITS, STOPBITS	  
@@ -220,19 +224,18 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	{
   		String str = null;
   		String strTransformed = null;
-
+  		
+ 		while(scanner.hasNextLine())
 		{
-			while(scanner.hasNextLine())
-			{
-		  		str = scanner.nextLine();
-		  		
-		  		strTransformed = BBCValues.buildCurrentStream(str.toCharArray());
-		  		
-		  		System.out.println(strTransformed);
-		  		
-		  		((MessageIO)component).message(strTransformed);
-			}			
-		}
+	  		str = scanner.nextLine();
+	  		
+//		  	strTransformed = BBCValues.buildCurrentStream(str.toCharArray());
+	  		strTransformed = grab.buildCurrentStream(str.toCharArray());
+	  		
+	  		System.out.println(strTransformed);
+	  		
+	  		((MessageIO)component).message(strTransformed);
+		}			
 	}
 
   	public SerialPort getPort() {

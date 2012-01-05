@@ -68,7 +68,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	{
 		SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD" } );
 		SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
-		SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd" } );
+		SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd", "None" } );
 		SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
 		SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "COM10", "COM11", "COM12", "COM13" } );
 
@@ -152,10 +152,10 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	
 	private void setDefaultValues()
 	{
-		comportBox.setValue("COM13");
+		comportBox.setValue("COM1");
 		baudBox.setValue("9600 BAUD");
 		stopBitBox.setValue("1 Bit");
-		parityBox.setValue("Odd");
+		parityBox.setValue("None");
 		dataBitsBox.setValue("8");
 		
 	}

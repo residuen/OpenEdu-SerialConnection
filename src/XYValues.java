@@ -1,5 +1,5 @@
 /*
-BBCValues: Parsen und transformieren der Messwerte des BBC GOERZ METRAWATT
+XYValues: Parsen und transformieren der Messwerte im csv-Format
 
 Copyright (C) 2011 Karsten Bettray
 
@@ -13,16 +13,9 @@ Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Prog
 Falls nicht, siehe <http://www.gnu.org/licenses/>.
 */
 
-public class ArduinoValues implements GrabberInterface
+public class XYValues implements GrabberInterface
 {
 
-	XYPlotter plot = new XYPlotter();
-
-	public ArduinoValues()
-	{
-		plot.showPlotter();
-	}
-	
 	public String buildCurrentStream(char[] inputChars)
 	{
 		return buildValue(inputChars, 8);
@@ -30,20 +23,12 @@ public class ArduinoValues implements GrabberInterface
 	
   	private String buildValue(char[] inputChars, int dataBits)
   	{
-   		StringBuffer hexStr = new StringBuffer();
-   		hexStr.append(inputChars);
+   		StringBuffer string = new StringBuffer();
+   		string.append(inputChars);
    		
-   		System.out.println("hexStr="+hexStr);
-   		
-   		String[] hexStrSplit = hexStr.toString().split(",");
-   		
-   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1])-600);
-  		
-  		StringBuffer retStr = new StringBuffer();
-  		
-  		retStr.append(inputChars);
+//   		System.out.println("string="+inputChars);
 
-  		return retStr.toString();	// Empfangene Zahl zurueckgeben
+  		return string.toString();	// Empfangene Zahl zurueckgeben
   	}
 
 	@Override

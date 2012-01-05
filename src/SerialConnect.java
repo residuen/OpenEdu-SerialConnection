@@ -32,18 +32,17 @@ import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
 /**
  * Class-name: SerialConnect
- * This class provides methods to read the serial-output of the arduino-board
+ * This class provides methods to read the serial-output of microcontrollers
  * @author Karsten Bettray
- * &copy; Karsten Bettray (2007.03.15)
+ * &copy; Karsten Bettray - 2011
  * @version 0.1
- * Licence: GPL 2.0
+ * Licence: GPL 3.0
  */
 public class SerialConnect extends Thread implements SerialPortEventListener
 {
@@ -63,7 +62,7 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	
 	private ReaderFactory readerFactory = new ReaderFactory();
 	// Die Objektvariable gInterface erzeugt fuer das BBC-Messgeraet aus dem Datenstrom den übertragenen Wert
-	private GrabberInterface gInterface = readerFactory.getInstance(ReaderFactory.BBC_DEVICE);
+	private GrabberInterface gInterface = readerFactory.getInstance(ReaderFactory.XY_CSV_FORMAT);
   		
 	private Component component = null;
 	
@@ -79,7 +78,8 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	private boolean interrupted = false;
 	
 	// Beinhaltet den Parser, passend zur Datenquelle
-	private GrabberInterface grab = new ArduinoValues();
+//	private GrabberInterface grab = new ArduinoValues();
+//	private GrabberInterface grab = new PollinValues();
   		
 	
 	public SerialConnect()
@@ -124,10 +124,11 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 		if (parityTyp == 'O' || parityTyp == 'o')
 			this.parityTyp = SerialPort.PARITY_ODD;
 
-		this.parityTyp = SerialPort.PARITY_NONE;
+		if (parityTyp == 'N' || parityTyp == 'n') 
+			this.parityTyp = SerialPort.PARITY_NONE;
     
-		if(stopBits == 1.5f)
-			this.stopBits = SerialPort.STOPBITS_1_5;
+		if(stopBits == 1)
+			this.stopBits = SerialPort.STOPBITS_1;//_5;
     
 		if(stopBits == 2)
 			this.stopBits = SerialPort.STOPBITS_2;
@@ -223,18 +224,25 @@ public class SerialConnect extends Thread implements SerialPortEventListener
   	synchronized public void serialEvent(SerialPortEvent serialEvent)
 	{
   		String str = null;
+  		byte b;
   		String strTransformed = null;
   		
+//  		while(scanner.hasNextByte())
  		while(scanner.hasNextLine())
 		{
+//			System.out.println("lese");
 	  		str = scanner.nextLine();
+//	  		b = scanner.nextByte();
+		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
+//	  		strTransformed = grab.buildCurrentStream(str.toCharArray());
 	  		
-//		  	strTransformed = BBCValues.buildCurrentStream(str.toCharArray());
-	  		strTransformed = grab.buildCurrentStream(str.toCharArray());
+	  		System.out.println(str.trim());
+//	  		System.out.println(b);
+//	  		System.out.println(strTransformed);
 	  		
-	  		System.out.println(strTransformed);
-	  		
-	  		((MessageIO)component).message(strTransformed);
+//	  		((MessageIO)component).message(b);
+	  		((MessageIO)component).message(str.trim());
+//	  		((MessageIO)component).message(strTransformed);
 		}			
 	}
 

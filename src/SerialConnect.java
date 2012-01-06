@@ -224,25 +224,28 @@ public class SerialConnect extends Thread implements SerialPortEventListener
   	synchronized public void serialEvent(SerialPortEvent serialEvent)
 	{
   		String str = null;
-  		byte b;
+  		
   		String strTransformed = null;
   		
-//  		while(scanner.hasNextByte())
+  		StringBuffer sb = new StringBuffer();
+  		
  		while(scanner.hasNextLine())
 		{
-//			System.out.println("lese");
 	  		str = scanner.nextLine();
-//	  		b = scanner.nextByte();
+	  		
+	  		for(char c : str.toCharArray())	// entfernen der Endmarke '0'
+	  		{
+	  			if( c != 0)
+	  				sb.append(c);
+	  		}
+	  		
 		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
-//	  		strTransformed = grab.buildCurrentStream(str.toCharArray());
 	  		
-	  		System.out.println(str.trim());
-//	  		System.out.println(b);
-//	  		System.out.println(strTransformed);
+	  		System.out.println(sb.toString().trim());
+
+	  		((MessageIO)component).message(sb.toString().trim());
 	  		
-//	  		((MessageIO)component).message(b);
-	  		((MessageIO)component).message(str.trim());
-//	  		((MessageIO)component).message(strTransformed);
+	  		sb.delete(0, sb.length());
 		}			
 	}
 

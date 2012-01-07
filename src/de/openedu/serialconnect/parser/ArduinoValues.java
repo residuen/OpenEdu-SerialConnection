@@ -1,3 +1,9 @@
+package de.openedu.serialconnect.parser;
+
+import javax.swing.JFrame;
+
+import de.openedu.serialconnect.interfaces.GrabberInterface;
+
 /*
 BBCValues: Parsen und transformieren der Messwerte des BBC GOERZ METRAWATT
 
@@ -13,19 +19,15 @@ Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Prog
 Falls nicht, siehe <http://www.gnu.org/licenses/>.
 */
 
-public class BBCValues implements GrabberInterface
+public class ArduinoValues implements GrabberInterface
 {
 
-//	public GrabberInterface grabValue(int typ)
-//	{
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+//	XYPlotter plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
 
-//	public String buildCurrentStream(char[] inputChars, int dataBits)
-//	{
-//		return buildValue(inputChars, dataBits);
-//	}
+	public ArduinoValues()
+	{
+//		plot.showPlotter();
+	}
 	
 	public String buildCurrentStream(char[] inputChars)
 	{
@@ -34,38 +36,18 @@ public class BBCValues implements GrabberInterface
 	
   	private String buildValue(char[] inputChars, int dataBits)
   	{
-   		String hexStr = "";
+   		StringBuffer hexStr = new StringBuffer();
+   		hexStr.append(inputChars);
+   		
+//   		System.out.println("hexStr="+hexStr);
+   		
+   		String[] hexStrSplit = hexStr.toString().split(",");
+   		
+//   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1])-600);
   		
   		StringBuffer retStr = new StringBuffer();
   		
-  		hexStr = Integer.toHexString(inputChars[1]);
-  		
-  		// Testen, ob Ausgabe von Messgeraet gueltig ist
-  		if(hexStr.equals("4f"))
-  		{
-   			retStr = null;
-  		}
-  		else	// wenn ja, Vorzeichen abfragen und setzen
-  		{
-  			if(hexStr.equals("20"))
-  				retStr.append("");
-  			else
-  				retStr.append("-");
-  		}
-  		
-  		// durch das char-Array laufen und zeichenweise
-  		// die Ziffern fuer den Messwert extrahieren
-  		// und in String schreiben
-  		for(int i=2; i<inputChars.length; i++)
-  		{
-  			hexStr = Integer.toHexString(inputChars[i]);
- 
-  			// Testen, ob ein komma gesendet wurde
-  			if(!hexStr.contains("ae"))
-  				retStr.append(hexStr.charAt(1));	// Komma in String schreiben
-  			else
-  				retStr.append(".");					// Ziffer in String schreiben
-  		}
+  		retStr.append(inputChars);
 
   		return retStr.toString();	// Empfangene Zahl zurueckgeben
   	}

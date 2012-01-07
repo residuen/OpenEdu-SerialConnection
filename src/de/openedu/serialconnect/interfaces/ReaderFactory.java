@@ -1,8 +1,12 @@
+package de.openedu.serialconnect.interfaces;
+import de.openedu.serialconnect.parser.BBCValues;
+import de.openedu.serialconnect.parser.TrimedValues;
+
 
 public class ReaderFactory
 {
 	public static final int BBC_DEVICE = 0;
-	public static final int XY_CSV_FORMAT = 1;
+	public static final int TRIMED_FORMAT = 1;
 
 	public GrabberInterface getInstance(int typ)
 	{
@@ -14,8 +18,8 @@ public class ReaderFactory
 				retV = new BBCValues();
 				break;
 			
-			case XY_CSV_FORMAT:
-				retV = new XYValues();
+			case TRIMED_FORMAT:
+				retV = new TrimedValues();
 				break;
 		}
 		

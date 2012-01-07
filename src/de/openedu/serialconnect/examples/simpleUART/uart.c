@@ -109,7 +109,7 @@ void usart_puti(int zahl, int sges) {
 	}
 
 	for(n=l;n<sges;n++)
-		usart_putc(' ');//Leerstellen senden
+		 usart_putc(' '); //Leerstellen senden
 
 	usart_puts(buffer);//Zahl senden
 }
@@ -141,7 +141,7 @@ void usart_putui(unsigned int zahl, int sges) {
 	}
 
 	for(n=l;n<sges;n++)
-		usart_putc(' ');
+		usart_putc(' '); 
 
 	usart_puts(buffer);
 }
@@ -157,8 +157,14 @@ void usart_putui_0(unsigned int zahl, int sges) {
 
 	utoa(zahl,buffer,10);//Unsigned to String (ASCII)
 
-	while(*z!=0){l++; z++;}//Bufferlänge l
-	for(n=l;n<sges;n++) usart_putc('0');
+	while(*z!=0)	//Bufferlänge l
+	{
+		l++;
+		z++;
+	}
+	
+	for(n=l;n<sges;n++)
+		usart_putc('0');
 
 	usart_puts(buffer);
 }
@@ -178,8 +184,10 @@ void usart_putui_hex(unsigned int zahl, int sges) {
 		z++;
 	}
 
-	for(n=l;n<sges;n++) usart_putc(' ');
-		usart_puts(buffer);
+	for(n=l;n<sges;n++)
+		 usart_putc(' '); 
+		
+	usart_puts(buffer);
 }
 //--------------------------------------------------------------
 void usart_putui_bin(unsigned int zahl, int sges) {
@@ -197,8 +205,10 @@ void usart_putui_bin(unsigned int zahl, int sges) {
 		z++;
 	}
 	
-	for(n=l;n<sges;n++) usart_putc('0');
-		usart_puts(buffer);
+	for(n=l;n<sges;n++)
+		usart_putc('0');
+		
+	usart_puts(buffer);
 }
 //--------------------------------------------------------------
 

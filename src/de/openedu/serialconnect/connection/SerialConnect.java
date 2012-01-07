@@ -1,10 +1,8 @@
 /**
--star * JOscilloscope - a plugable software-oscilloskope (supported by: http://www.wvs-koeln.de)
- * 
  * Class: SerialConnect.java
  * 
  * @author Karsten Bettray
- * &copy; 2007 Karsten Bettray
+ * &copy; 2011 Karsten Bettray
  * 
  *  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 */
 
+package de.openedu.serialconnect.connection;
+
+import de.openedu.serialconnect.interfaces.ReaderFactory;
 import gnu.io.CommPortIdentifier;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
@@ -35,6 +36,9 @@ import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.TooManyListenersException;
 import java.util.Vector;
+
+import de.openedu.serialconnect.gui.MessageIO;
+import de.openedu.serialconnect.interfaces.GrabberInterface;
 
 /**
  * Class-name: SerialConnect
@@ -62,11 +66,9 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	
 	private ReaderFactory readerFactory = new ReaderFactory();
 	// Die Objektvariable gInterface erzeugt fuer das BBC-Messgeraet aus dem Datenstrom den übertragenen Wert
-	private GrabberInterface gInterface = readerFactory.getInstance(ReaderFactory.XY_CSV_FORMAT);
+	private GrabberInterface gInterface = readerFactory.getInstance(ReaderFactory.TRIMED_FORMAT);
   		
 	private Component component = null;
-	
-//	HashMap<String, String> cmdMap = new HashMap<String, String>();
 	
 	// read buffer, streams and scanner 
 	private InputStream inputStream;
@@ -76,10 +78,6 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	private boolean showInSystemOut = true;
 	
 	private boolean interrupted = false;
-	
-	// Beinhaltet den Parser, passend zur Datenquelle
-//	private GrabberInterface grab = new ArduinoValues();
-//	private GrabberInterface grab = new PollinValues();
   		
 	
 	public SerialConnect()
@@ -128,14 +126,12 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 			this.parityTyp = SerialPort.PARITY_NONE;
     
 		if(stopBits == 1)
-			this.stopBits = SerialPort.STOPBITS_1;//_5;
+			this.stopBits = SerialPort.STOPBITS_1;
     
 		if(stopBits == 2)
 			this.stopBits = SerialPort.STOPBITS_2;
 		
 		System.out.println("initSerialConnect");
-		
-//		initConnection();
 	}
 	
 	/**
@@ -215,37 +211,26 @@ public class SerialConnect extends Thread implements SerialPortEventListener
     
 		port = null;
 	}
-
-//	private String addCommand(String str)
-//	{
-//		return "addchn=0 addvalue="+ ((double)(System.currentTimeMillis() - startTime) / 1000d) + ":"+Double.parseDouble(str);
-//	}
 	
+	/**
+	 * UART-Event:
+	 * Die gesendeten Daten werden als String empfangen und
+	 */
   	synchronized public void serialEvent(SerialPortEvent serialEvent)
 	{
   		String str = null;
   		
   		String strTransformed = null;
   		
-  		StringBuffer sb = new StringBuffer();
-  		
  		while(scanner.hasNextLine())
 		{
 	  		str = scanner.nextLine();
-	  		
-	  		for(char c : str.toCharArray())	// entfernen der Endmarke '0'
-	  		{
-	  			if( c != 0)
-	  				sb.append(c);
-	  		}
-	  		
+	  			  		
 		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
 	  		
-	  		System.out.println(sb.toString().trim());
+	  		System.out.println(strTransformed);
 
-	  		((MessageIO)component).message(sb.toString().trim());
-	  		
-	  		sb.delete(0, sb.length());
+	  		((MessageIO)component).message(strTransformed);
 		}			
 	}
 
@@ -261,12 +246,11 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 		return interrupted;
 	}
 
-	public void interrupt() { //edsetInterrupted(boolean interrupt) {
+	public void interrupt() {
 		this.interrupted = true;
 		
 		this.dispose();
 	}
-  	
 
 	public String getPortName() {
 		return portName;

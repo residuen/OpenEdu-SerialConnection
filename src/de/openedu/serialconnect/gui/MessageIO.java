@@ -1,3 +1,5 @@
+package de.openedu.serialconnect.gui;
+
 
 public interface MessageIO {
 

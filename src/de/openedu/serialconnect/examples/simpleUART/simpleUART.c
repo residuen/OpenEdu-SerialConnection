@@ -1,5 +1,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
+#include <math.h>
 #include "uart.h"
 
 void blink()
@@ -16,11 +17,20 @@ int main(void)
 
 	DDRD = 1<<PD6;
 
+	float x=0, y;
+
 	while(1)
 	{
-		usart_puts("Hallo Welt!\n");
+		// usart_puts("HALLO WELT!\n");
+		//usart_puts("x=");
+		usart_putf(x,2,1);
+		usart_puts(",");
+		usart_putf(sin(x),4,3);
+		usart_puts("\n");
 		blink();
-		_delay_ms(2500);
+		_delay_ms(250);
+
+		x+=0.1;
 	}
 	
 	return 0;

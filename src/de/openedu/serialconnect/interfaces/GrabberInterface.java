@@ -1,3 +1,4 @@
+package de.openedu.serialconnect.interfaces;
 
 public interface GrabberInterface 
 {

@@ -1,5 +1,5 @@
 /*
-BBCValues: Parsen und transformieren der Messwerte des BBC GOERZ METRAWATT
+XYValues: Parsen und transformieren der Messwerte im csv-Format
 
 Copyright (C) 2011 Karsten Bettray
 
@@ -13,16 +13,25 @@ Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Prog
 Falls nicht, siehe <http://www.gnu.org/licenses/>.
 */
 
-public class ArduinoValues implements GrabberInterface
+package de.openedu.serialconnect.parser;
+
+import javax.swing.JFrame;
+
+import de.openedu.serialconnect.interfaces.GrabberInterface;
+import de.openedu.serialconnect.lib.XYPlotter;
+
+public class TrimedValues implements GrabberInterface
 {
-
-	XYPlotter plot = new XYPlotter();
-
-	public ArduinoValues()
+	private XYPlotter plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
+	private StringBuffer sb = new StringBuffer();
+	
+//	private int count = 0;
+	
+	public TrimedValues()
 	{
 		plot.showPlotter();
 	}
-	
+		
 	public String buildCurrentStream(char[] inputChars)
 	{
 		return buildValue(inputChars, 8);
@@ -30,20 +39,29 @@ public class ArduinoValues implements GrabberInterface
 	
   	private String buildValue(char[] inputChars, int dataBits)
   	{
-   		StringBuffer hexStr = new StringBuffer();
-   		hexStr.append(inputChars);
-   		
-   		System.out.println("hexStr="+hexStr);
-   		
-   		String[] hexStrSplit = hexStr.toString().split(",");
-   		
-   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1])-600);
+		sb.delete(0, sb.length());
+ 	  	
+		// entfernen der Endmarke '0' und erzeugen eines Ergebnis-Strings
+  		for(char c : inputChars)	
+  		{
+  			if( c != 0)
+  				sb.append(c);
+  		}
   		
-  		StringBuffer retStr = new StringBuffer();
+  		// 2 Messungen ueberspringen
+//  		if(count <2)
+//  		{
+//  			count++;
+//  			return sb.toString();
+//  		}
   		
-  		retStr.append(inputChars);
-
-  		return retStr.toString();	// Empfangene Zahl zurueckgeben
+  		// Splitten des Strings nach Komma
+  		String[] hexStrSplit = sb.toString().split(",");
+   		
+  		// Zeichnen eines xy-Plots
+   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
+		
+  		return sb.toString();	// Empfangene Zahl zurueckgeben
   	}
 
 	@Override

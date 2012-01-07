@@ -3,6 +3,7 @@ package de.openedu.serialconnect.parser;
 import javax.swing.JFrame;
 
 import de.openedu.serialconnect.interfaces.GrabberInterface;
+import de.openedu.serialconnect.lib.XYPlotter;
 
 /*
 BBCValues: Parsen und transformieren der Messwerte des BBC GOERZ METRAWATT
@@ -21,12 +22,11 @@ Falls nicht, siehe <http://www.gnu.org/licenses/>.
 
 public class ArduinoValues implements GrabberInterface
 {
-
-//	XYPlotter plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
+	XYPlotter plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
 
 	public ArduinoValues()
 	{
-//		plot.showPlotter();
+		plot.showPlotter();
 	}
 	
 	public String buildCurrentStream(char[] inputChars)
@@ -43,7 +43,7 @@ public class ArduinoValues implements GrabberInterface
    		
    		String[] hexStrSplit = hexStr.toString().split(",");
    		
-//   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1])-600);
+   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1])-600);
   		
   		StringBuffer retStr = new StringBuffer();
   		

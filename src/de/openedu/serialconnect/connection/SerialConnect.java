@@ -51,6 +51,7 @@ import de.openedu.serialconnect.interfaces.GrabberInterface;
 public class SerialConnect extends Thread implements SerialPortEventListener
 {
 	private static final boolean MESSAGE = true;
+	private static final boolean DEBUGMESSAGE = false;
 
 	private SerialPort port;
 
@@ -65,7 +66,7 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	long startTime = 0;
 	
 	private ReaderFactory readerFactory = new ReaderFactory();
-	// Die Objektvariable gInterface erzeugt fuer das BBC-Messgeraet aus dem Datenstrom den übertragenen Wert
+
 	private GrabberInterface gInterface = readerFactory.getInstance(ReaderFactory.TRIMED_FORMAT);
   		
 	private Component component = null;
@@ -75,11 +76,10 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	private Scanner scanner;
 
 	// print the control-messages
-	private boolean showInSystemOut = true;
+//	private boolean showInSystemOut = true;
 	
 	private boolean interrupted = false;
   		
-	
 	public SerialConnect()
 	{
 //		initSerialConnect(portName, baudRate, parityTyp, dataBits, stopBits); // PORT, BAUDRATE, PARITY-TYP, DATABITS, STOPBITS	  
@@ -141,7 +141,9 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	{
 		try
 		{
-			Enumeration portList = CommPortIdentifier.getPortIdentifiers();
+			// Portliste auslesen
+			@SuppressWarnings("unchecked")
+			Enumeration<CommPortIdentifier> portList = CommPortIdentifier.getPortIdentifiers();
       
 			while(portList.hasMoreElements())
 			{
@@ -205,7 +207,7 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 
 		try {
 			if(port != null)
-				port.close();  // close the port
+				port.close();  // Port schliessen
 		}
 		catch(Exception e) { e.printStackTrace(); }
     
@@ -218,18 +220,21 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	 */
   	synchronized public void serialEvent(SerialPortEvent serialEvent)
 	{
-  		String str = null;
+//  		String str = null;
   		
   		String strTransformed = null;
   		
+  		// Lesen solange Zeichenketten gesendet werden
  		while(scanner.hasNextLine())
 		{
-	  		str = scanner.nextLine();
+//	  		str = scanner.nextLine();
 	  			  		
-		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
+		  	strTransformed = gInterface.buildCurrentStream(scanner.nextLine().toCharArray()); //str.toCharArray());
 	  		
-	  		System.out.println(strTransformed);
+		  	if(DEBUGMESSAGE)
+		  		System.out.println(strTransformed);
 
+		  	// Nachricht an Message-Componente
 	  		((MessageIO)component).message(strTransformed);
 		}			
 	}

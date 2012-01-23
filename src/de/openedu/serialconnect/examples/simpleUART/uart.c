@@ -1,81 +1,62 @@
-/* Quelle: http://tschallener.net/AVR/usart_h.html */
+/* angelehnt an: http://tschallener.net/AVR/usart_h.html */
 
 #include <avr/io.h>
 #include <stdlib.h>
 
-//=======================================================================
-//Serielle Schnittstelle mit 8 Bit, no parity, 1 Stoppbit  initialisieren
-//=======================================================================
-//
+//Serielle Schnittstelle initialisieren	// OK
 void usart_init(uint16_t baud) {
 
-	const uint32_t fosz=8000000L;	//Taktfrequenz 8MHz
-//	const uint32_t fosz=´16000000L;	//Taktfrequenz 16MHz
+	const uint32_t freq_osz=8000000L;	//Taktfrequenz 8MHz
+//	const uint32_t freq_osz=´16000000L;	//Taktfrequenz 16MHz
 
-	uint16_t baud_wert;
+	uint16_t baud_rate;
 
 	//Baudrate einstellen
-	baud_wert=fosz/(baud*16L)-1;
-	UBRRH=(uint8_t)(baud_wert>>8);
-	UBRRL=(uint8_t)baud_wert;     
+	baud_rate=freq_osz/(baud*16L)-1;
+	UBRRH=(uint8_t)(baud_rate>>8);
+	UBRRL=(uint8_t)baud_rate;     
 
-	//8N1 Daten
-	UCSRC|=(1<<URSEL)|(3<<UCSZ0); 
-	//Empfangen und Senden
+	//8N1 Daten -> 8 Datenbits, Keine Paritaet, 1 Stopbit
+	UCSRC|=(1<<URSEL)|(3<<UCSZ0);
+
+	// Senden und Empfangen
 	UCSRB=(1<<RXEN)|(1<<TXEN);
 }
 
 
-//==============================================================
-//Empfangsfunktionen
-//==============================================================
+// --- Funkionen zum Datenempfang ---
+
+
+// Ueberpruefung, ob ein einzelnes Byte empfangen wurde	// OK
 uint8_t usart_byte_avail(void) {
-	//Prüft, ob Byte empfangen wurde
-	if(UCSRA&(1<<RXC))
-		return 1;
+
+	if(UCSRA&(1<<RXC))	// Ueberpruefe ob ein char gesendet wurde
+		return 1;		// wenn ja, ein zurueckgeben
 	else
-		return 0;
+		return 0;		// ansonsten 0 zurueckgeben
 }
-//---------------------------------------------------------------
+
+// Ein Byte einlesen	// OK
 uint8_t usart_getc(void) {
 
-	//Wartet, bis ein Byte empfangen wurde!
-	//Liest dann dieses Byte.
-	while(!(UCSRA&(1<<RXC)));
-		return UDR;
+	while(!(UCSRA&(1<<RXC)));	// Warten auf empfangenes Byte
+		return UDR;				// Lesen und zurueckgeben des Bytes
 }
-//--------------------------------------------------------------
+
+// Einlesen von Zeichenketten	// OK
 void usart_gets(char *s) {
 
-	//Wartet auf die Zeichen einer Zeichenkette!
-	//Liest dann die einzelnen Zeichen der  Zeichenkette
-	//einschließlich Endmarke 0 in die Stringvariable s
-	char c;
+	char c;	// Puffervariable zum einlesen einer Zeichenkette
 
-	do{
-		c = usart_getc();
-		*s=c;
-		s++;
-	} while(c!=0);
+	do {
+		c = usart_getc();	// Funktionsaufruf zum lesen eines Bytes
+		*s=c;				// Schreiben des Bytes in Zeichenkette (Zeiger auf char)
+		s++;				// hochzaehlen der Zeichenketten/Zeigeradresse
+	} while(c!=0);			// Abbruch nachdem Endmarke erreicht und eingelsen wurde
 }
 
-//
-//Hinweise zum Empfang Zahlen (int, long, foat und double)
-//--------------------------------------------------------
-// Zahlen werden vor dem Senden in Zeichenketten umgewandelt.
-// Sie müssen deshalb mit der obigen Funktion usart_gets_intr als 
-// Zeichenketten empfangen werden.
-//
-// Die Rückumwandung dieser Zeichenkette in Zahlen kann dann mit
-// den Funktionen aus <stdlib.h> erfolgen:
-//
-//    int    atoi(const char* s);    => Umwandlung in int
-//    long   atol(const char* s);    => Umwandlung in long
-//    double atof(const char* s);    => Umwandlung in double oder float
-//
-//==============================================================
-//Sendefunktionen
-//==============================================================
+// --- Funktionen zum Senden von Daten ---
+
 void usart_putc(uint8_t byte) {
 
 	//Ein Byte senden
@@ -233,3 +214,18 @@ Beispiel Senden einer Integer-Zahl: -1230
 
 -----------------------------------------------------------------
 */
+
+// Hinweise zum Empfang Zahlen (int, long, foat und double)
+// --------------------------------------------------------
+// Zahlen werden vor dem Senden in Zeichenketten umgewandelt.
+// Sie müssen deshalb mit der obigen Funktion usart_gets_intr als 
+// Zeichenketten empfangen werden.
+//
+// Die Rückumwandung dieser Zeichenkette in Zahlen kann dann mit
+// den Funktionen aus <stdlib.h> erfolgen:
+//
+//    int    atoi(const char* s);    => Umwandlung in int
+//    long   atol(const char* s);    => Umwandlung in long
+//    double atof(const char* s);    => Umwandlung in double oder float
+//
+

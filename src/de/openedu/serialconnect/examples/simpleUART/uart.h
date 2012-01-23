@@ -1,3 +1,7 @@
+/*
+* Header-Datei fuer uart.c
+*/
+
 void usart_init(uint16_t baud);
 uint8_t usart_byte_avail(void);
 uint8_t usart_getc(void);

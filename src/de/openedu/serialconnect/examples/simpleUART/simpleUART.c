@@ -3,34 +3,35 @@
 #include <math.h>
 #include "uart.h"
 
+// Wechselt den Zustand an PORTD Pin6
 void blink()
 {
-		if(PIND&(1<<PD6))
-			PORTD &= ~(1<<PD6);
-		else
-			PORTD |= 1<<PD6;
+	if(PIND&(1<<PD6))
+		PORTD &= ~(1<<PD6);
+	else
+		PORTD |= 1<<PD6;
 }
 
 int main(void)
 {
-	usart_init(9600);
+	usart_init(9600);	// Initialisieren der seriellen Schnittstelle
 
-	DDRD = 1<<PD6;
+	DDRD = 1<<PD6;		// Bit6 PortD als Ausgang festlegen
 
-	float x=0, y;
+	float x=0, y;		// Variablen 
 
 	while(1)
 	{
-		// usart_puts("HALLO WELT!\n");
-		//usart_puts("x=");
-		usart_putf(x,2,1);
-		usart_puts(",");
-		usart_putf(sin(x),4,3);
-		usart_puts("\n");
-		blink();
-		_delay_ms(250);
+		usart_putf(x,2,1);		// Ausgabe von x
+		usart_puts(",");		// Ausgabe des Kommas
+		usart_putf(sin(x),4,3);	// Berechnen und ausgeben von Sinus x
+		usart_puts("\n");		// Zeilenumbruch senden
 
-		x+=0.1;
+		blink();				// Signal wechseln	
+
+		_delay_ms(1000);			// Wartezeit bis zum naechsten Senden
+
+		x+=0.1;					// Counter fuer x
 	}
 	
 	return 0;

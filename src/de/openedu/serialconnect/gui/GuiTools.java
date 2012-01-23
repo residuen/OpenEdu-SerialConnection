@@ -1,6 +1,4 @@
 package de.openedu.serialconnect.gui;
-import java.awt.Dimension;
-
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 

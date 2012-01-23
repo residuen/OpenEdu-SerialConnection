@@ -5,6 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -20,7 +27,7 @@ import javax.swing.SwingUtilities;
 
 import de.openedu.serialconnect.connection.SerialConnect;
 
-public class SerialConnectGUI extends JFrame implements ActionListener, MessageIO
+public class SerialConnectGUI extends JFrame implements ActionListener, MessageIO, WindowListener
 {
 	private JSpinner baudBox = null;	
 	private JSpinner stopBitBox = null;
@@ -32,8 +39,11 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	
 	private JCheckBox showValues = null;
 	private JCheckBox autoScroll = null;
+	private JCheckBox saveMode = null;
 	
 	private SerialConnect serialConnect = null;
+	
+	private BufferedWriter fileWriter = null;
 	
 	public SerialConnectGUI()
 	{
@@ -47,7 +57,8 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		setLayout(new BorderLayout());
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(360, 360);
+		setSize(300, 360);
+		addWindowListener(this);
 				
 		initComponents();
 		
@@ -60,12 +71,15 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
 		SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd", "None" } );
 		SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
-		SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "COM10", "COM11", "COM12", "COM13" } );
+		SpinnerListModel model5 = new SpinnerListModel(new String[] {"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "COM10", "COM11", "COM12", "COM13", "COM14", "COM15", "COM16" } );
 
 		textArea = new JTextArea("");
 		
-		showValues = new JCheckBox("Values", true);
+		showValues = new JCheckBox("values", true);
 		autoScroll = new JCheckBox("autoscroll", true);
+		saveMode = new JCheckBox("save on hdd", false);
+		
+		saveMode.addActionListener(this);
 		
 		baudBox = new JSpinner(model1);	
 		stopBitBox = new JSpinner(model2);	
@@ -128,9 +142,13 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		btn = new JButton("default");
 		btn.addActionListener(this);
 		hBox.add(btn);
+		vBox.add(hBox);
 
+		hBox = Box.createHorizontalBox();
 		hBox.add(showValues);
 		hBox.add(autoScroll);
+		hBox.add(saveMode);
+		vBox.add(hBox);
 		
 		vBox.add(Box.createVerticalStrut(5));
 		vBox.add(hBox);
@@ -147,15 +165,49 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		stopBitBox.setValue("1 Bit");
 		parityBox.setValue("None");
 		dataBitsBox.setValue("8");
-		
+	}
+	
+	private void setDataWrite()
+	{
+		if(fileWriter == null)
+		{
+			try
+			{
+				System.out.println("opening uart-logfile");
+				
+				String file = System.getProperty("user.home")+"\\uart_log_"+System.currentTimeMillis()+".txt";
+//				System.out.println(file);
+				fileWriter = new BufferedWriter(new FileWriter(new File(file)));
+			}
+			catch (IOException e) { e.printStackTrace(); }
+		}
+	}
+	
+	private void closeDataWrite()
+	{
+		try
+		{
+			if(fileWriter != null)
+			{
+				System.out.println("closing uart-logfile");
+				
+				fileWriter.flush();
+				fileWriter.close();
+				fileWriter = null;
+			}
+		}
+		catch (IOException e) { e.printStackTrace(); }
 	}
 
 	public void actionPerformed(ActionEvent arg0)
 	{
-		System.out.println(arg0.getActionCommand());
+		String cmd = arg0.getActionCommand();
+		
+		System.out.println(cmd);
+		
 		if(serialConnect == null)
 		{
-			if(arg0.getActionCommand().equals("start"))
+			if(cmd.equals("start"))
 			{
 				System.out.println("START serial-connection");
 				
@@ -172,20 +224,36 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 				serialConnect.startConnection();
 			}
 		}
-		else if(arg0.getActionCommand().equals("stop"))
+		else if(cmd.equals("stop"))
 		{
 			if(serialConnect != null)
 			{
 				System.out.println("STOP serial-connection");
+				
+				closeDataWrite();
+				saveMode.setSelected(false);
 				
 				serialConnect.interrupt();
 				serialConnect = null;
 			}
 
 		}
-		else if(arg0.getActionCommand().equals("default"))
+		else if(cmd.equals("default"))
 		{
 			setDefaultValues();
+		}
+		
+		// Log-File von seriellem Datenstrom in Datei schreiben
+		if(cmd.equals("save on hdd"))
+		{
+			if(saveMode.isSelected())
+			{
+				setDataWrite();
+			}
+			else
+			{
+				closeDataWrite();
+			}
 		}
 	}
 	
@@ -194,6 +262,15 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			public void run() {
+				
+				
+				if(saveMode.isSelected())
+				{
+					try {
+						fileWriter.append(s);
+						fileWriter.newLine();
+					} catch (IOException e) { e.printStackTrace(); }
+				}
 				
 				if(showValues.isSelected())
 				{
@@ -207,6 +284,29 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 			}
 		});
 	}
+
+	@Override
+	public void windowClosing(WindowEvent arg0) {
+		closeDataWrite();
+	}
+
+	@Override
+	public void windowActivated(WindowEvent arg0) { }
+
+	@Override
+	public void windowClosed(WindowEvent arg0) { }
+
+	@Override
+	public void windowDeactivated(WindowEvent arg0) { }
+
+	@Override
+	public void windowDeiconified(WindowEvent arg0) { }
+
+	@Override
+	public void windowIconified(WindowEvent arg0) { }
+
+	@Override
+	public void windowOpened(WindowEvent arg0) { }
 	
 	public static void main(String[] args)
 	{

@@ -29,7 +29,7 @@ public class TrimedValues implements GrabberInterface
 	
 	public TrimedValues()
 	{
-		plot.showPlotter();
+//		plot.showPlotter();
 	}
 		
 	public String buildCurrentStream(char[] inputChars)
@@ -59,7 +59,7 @@ public class TrimedValues implements GrabberInterface
   		String[] hexStrSplit = sb.toString().split(",");
    		
   		// Zeichnen eines xy-Plots
-   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
+//   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
 		
   		return sb.toString();	// Empfangene Zahl zurueckgeben
   	}

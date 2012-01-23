@@ -236,7 +236,6 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 				serialConnect.interrupt();
 				serialConnect = null;
 			}
-
 		}
 		else if(cmd.equals("default"))
 		{
@@ -262,7 +261,6 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			public void run() {
-				
 				
 				if(saveMode.isSelected())
 				{

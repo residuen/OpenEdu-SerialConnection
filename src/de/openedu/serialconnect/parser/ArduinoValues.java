@@ -23,6 +23,8 @@ Falls nicht, siehe <http://www.gnu.org/licenses/>.
 public class ArduinoValues implements GrabberInterface
 {
 	XYPlotter plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
+	
+	private boolean plugin = true;
 
 	public ArduinoValues()
 	{
@@ -56,5 +58,13 @@ public class ArduinoValues implements GrabberInterface
 	public String buildCurrentStream(String inputChars) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean isPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(boolean plugin) {
+		this.plugin = plugin;
 	}
 }

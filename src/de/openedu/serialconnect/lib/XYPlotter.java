@@ -16,7 +16,6 @@ Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Prog
 Falls nicht, siehe <http://www.gnu.org/licenses/>.
 */
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 
 import javax.swing.JFrame;
@@ -26,7 +25,10 @@ import javax.swing.SwingUtilities;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.Axis;
+import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
@@ -37,14 +39,24 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class XYPlotter extends JFrame implements PlotterInterface
 {
 	private XYPlot plot = null;
+
 	private XYSeries series1 = null;
 	private XYSeries series2 = null;
-	private XYSeriesCollection xyDataset = null;
-	private JFreeChart chart = null;
-	private ChartPanel chartPanel = null;
-	private  NumberAxis rangeAxis = null;
-	private XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
 
+	private XYSeriesCollection xyDataset = null;
+
+	private JFreeChart chart = null;
+
+	private ChartPanel chartPanel = null;
+	private NumberAxis rangeAxis = null;	// range of y-aches
+	private NumberAxis domainAxis = null;	// range of x-aches
+
+	private XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
+	
+	private boolean scopeMode = false;
+	
+	private double x0 = 0, x1 = 0, y0 = 0, y1 = 0;
+	
 	public XYPlotter()
 	{
 		super("XY-Plotter");
@@ -112,7 +124,12 @@ public class XYPlotter extends JFrame implements PlotterInterface
 
         // change the auto tick unit selection to integer units only...
         rangeAxis = (NumberAxis) plot.getRangeAxis();
+        domainAxis = (NumberAxis) plot.getDomainAxis();
+//        rangeAxis.setRange(0, 1);		// setup and fix the range of y-achses
+//        domainAxis.setRange(0, 100);	// setup and fix the range of x-achses
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+        
+//        plot.getDomainAxis().setRange(0, 100);	// setup the range of y-achses
         // OPTIONAL CUSTOMISATION COMPLETED.
                 
         chartPanel = new ChartPanel(chart);
@@ -152,7 +169,7 @@ public class XYPlotter extends JFrame implements PlotterInterface
 	@Override
 	public void hidePlotter() {
 		
-		setVisible(true);
+		setVisible(false);
 	}
 
 	/**
@@ -372,5 +389,25 @@ public class XYPlotter extends JFrame implements PlotterInterface
 				}
 			}
 		}
+	}
+
+	@Override
+	public void setScopeMode(boolean mode) {
+		
+		this.scopeMode = mode;
+		
+		if(mode)
+			domainAxis.setRange(0, 100);
+		else
+			domainAxis.setAutoRange(true);
+	}
+
+	@Override
+	public void setScopeRange(double x0, double x1, double y0, double y1) {
+		
+		this.x0 = x0;
+		this.x1 = x1;
+		this.y0 = y0;
+		this.y1 = y1;
 	}
 }

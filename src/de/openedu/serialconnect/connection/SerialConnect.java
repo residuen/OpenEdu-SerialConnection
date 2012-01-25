@@ -229,7 +229,7 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 		{
 //	  		str = scanner.nextLine();
 	  			  		
-		  	strTransformed = gInterface.buildCurrentStream(scanner.nextLine().toCharArray()); //str.toCharArray());
+		  	strTransformed = gInterface.buildCurrentStream(scanner.nextLine().toCharArray());
 	  		
 		  	if(DEBUGMESSAGE)
 		  		System.out.println(strTransformed);
@@ -315,5 +315,15 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	
 	public void setComponent(Component component) {
 		this.component = component;
+	}
+	
+	public void setPlugin(boolean b)
+	{
+		gInterface.setPlugin(b);
+	}
+	
+	public boolean isPlugin()
+	{
+		return gInterface.isPlugin();
 	}
 }

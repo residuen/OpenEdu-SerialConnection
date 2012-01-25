@@ -22,14 +22,17 @@ import de.openedu.serialconnect.lib.XYPlotter;
 
 public class TrimedValues implements GrabberInterface
 {
-	private XYPlotter plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
+	private XYPlotter plot = null;
 	private StringBuffer sb = new StringBuffer();
+	
+	private boolean plugin = false;
 	
 //	private int count = 0;
 	
 	public TrimedValues()
 	{
-//		plot.showPlotter();
+		if(plugin)
+			setPlugin(plugin);
 	}
 		
 	public String buildCurrentStream(char[] inputChars)
@@ -59,7 +62,8 @@ public class TrimedValues implements GrabberInterface
   		String[] hexStrSplit = sb.toString().split(",");
    		
   		// Zeichnen eines xy-Plots
-//   		plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
+  		if(plugin && plot.isVisible())
+  			plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
 		
   		return sb.toString();	// Empfangene Zahl zurueckgeben
   	}
@@ -68,5 +72,34 @@ public class TrimedValues implements GrabberInterface
 	public String buildCurrentStream(String inputChars) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean isPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(boolean plugin) {
+		
+		this.plugin = plugin;
+		
+		System.out.println(plugin);
+		
+		if(plugin)
+		{
+			if(plot == null)
+			{
+				System.out.println("new plotter");
+				plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);	
+				plot.setScopeMode(false);
+				plot.showPlotter();
+			}
+		}
+		else
+		{
+			System.out.println("hide plotter");
+			plot.hidePlotter();
+			plot = null;
+		}
+			
 	}
 }

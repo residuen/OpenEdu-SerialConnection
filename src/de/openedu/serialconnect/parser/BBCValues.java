@@ -18,6 +18,9 @@ Falls nicht, siehe <http://www.gnu.org/licenses/>.
 
 public class BBCValues implements GrabberInterface
 {
+	
+	private boolean plugin = true;
+
 	public String buildCurrentStream(char[] inputChars)
 	{
 		return buildValue(inputChars, 8);
@@ -65,5 +68,13 @@ public class BBCValues implements GrabberInterface
 	public String buildCurrentStream(String inputChars) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean isPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(boolean plugin) {
+		this.plugin = plugin;
 	}
 }

@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.awt.event.WindowStateListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -40,6 +39,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	private JCheckBox showValues = null;
 	private JCheckBox autoScroll = null;
 	private JCheckBox saveMode = null;
+	private JCheckBox plugin = null;
 	
 	private SerialConnect serialConnect = null;
 	
@@ -57,7 +57,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		setLayout(new BorderLayout());
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(300, 360);
+		setSize(320, 360);
 		addWindowListener(this);
 				
 		initComponents();
@@ -67,7 +67,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	
 	private void initComponents()
 	{
-		SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD" } );
+		SpinnerListModel model1 = new SpinnerListModel( new String[] {"150 BAUD", "300 BAUD", "600 BAUD", "1200 BAUD", "2400 BAUD", "4800 BAUD", "9600 BAUD", "14400 BAUD", "19200 BAUD" } );
 		SpinnerListModel model2 = new SpinnerListModel( new String[] {"1 Bit", "2 Bit" } );
 		SpinnerListModel model3 = new SpinnerListModel(new String[] {"Even", "Odd", "None" } );
 		SpinnerListModel model4 = new SpinnerListModel(new String[] {"4", "8" } );
@@ -78,8 +78,10 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		showValues = new JCheckBox("values", true);
 		autoScroll = new JCheckBox("autoscroll", true);
 		saveMode = new JCheckBox("save on hdd", false);
+		plugin = new JCheckBox("add plugin", false);
 		
 		saveMode.addActionListener(this);
+		plugin.addActionListener(this);
 		
 		baudBox = new JSpinner(model1);	
 		stopBitBox = new JSpinner(model2);	
@@ -148,6 +150,7 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 		hBox.add(showValues);
 		hBox.add(autoScroll);
 		hBox.add(saveMode);
+		hBox.add(plugin);
 		vBox.add(hBox);
 		
 		vBox.add(Box.createVerticalStrut(5));
@@ -161,7 +164,8 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 	private void setDefaultValues()
 	{
 		comportBox.setValue("COM1");
-		baudBox.setValue("9600 BAUD");
+		baudBox.setValue("19200 BAUD");
+//		baudBox.setValue("9600 BAUD");
 		stopBitBox.setValue("1 Bit");
 		parityBox.setValue("None");
 		dataBitsBox.setValue("8");
@@ -253,6 +257,12 @@ public class SerialConnectGUI extends JFrame implements ActionListener, MessageI
 			{
 				closeDataWrite();
 			}
+		}
+		else
+		// Plugin des Parser-Objektes aktivieren oder abschalten
+		if(cmd.equals("add plugin"))
+		{
+			serialConnect.setPlugin(plugin.isSelected());
 		}
 	}
 	

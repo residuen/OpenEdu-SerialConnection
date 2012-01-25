@@ -3,6 +3,8 @@ public interface PlotterInterface {
 
 	public void showPlotter();
 	public void hidePlotter();
+	public void setScopeMode(boolean mode);
+	public void setScopeRange(double x0, double x1, double y0, double y1);
 	public void updateData(double[] x, double[] y);
 	public void updateData(double[] x, double[] y, double marksX, double marksY);
 	public void updateData(double[] x, double[] y, double[] marksX, double[] marksY);

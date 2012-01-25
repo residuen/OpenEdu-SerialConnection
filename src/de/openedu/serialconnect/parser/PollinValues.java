@@ -18,6 +18,8 @@ Falls nicht, siehe <http://www.gnu.org/licenses/>.
 
 public class PollinValues implements GrabberInterface
 {
+	
+	private boolean plugin = true;
 
 //	XYPlotter plot = new XYPlotter();
 
@@ -56,5 +58,13 @@ public class PollinValues implements GrabberInterface
 	public String buildCurrentStream(String inputChars) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public boolean isPlugin() {
+		return plugin;
+	}
+
+	public void setPlugin(boolean plugin) {
+		this.plugin = plugin;
 	}
 }

@@ -22,8 +22,14 @@ import de.openedu.serialconnect.lib.XYPlotter;
 public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, WindowListener {
 
 	private JCheckBox plotMode = null;
+	
 	private BufferedWriter fileWriter = null;
+	
 	private XYPlotter plot= new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
+	
+	private boolean doPlot = false;
+	
+	private int count = 1;
 	
 	public Plugin_XYPlotter()
 	{		
@@ -41,25 +47,32 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 	
 	private void initXYPlotter()
 	{
-		if(plot == null)
+		if(!doPlot)
 		{
+//			if(plot !=null)
+//			{
+//				plot.hidePlotter();
+//				plot = null;
+//			}
+			
 			System.out.println("new plotter");
 			plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
+			plot.setTitle("My serial plotwindow: "+(count++));
+			plot.setScopeMode(false);
+			plot.addWindowListener(this);
+			plot.showPlotter();
+			
+			doPlot = true;
 		}
 		
-		plot.setScopeMode(false);
-		plot.addWindowListener(this);
-		plot.showPlotter();
 	}
 	
 	private void closeXYPlotter()
 	{
 		System.out.println("close plotter");
 		
-		if(plot != null)
-			plot.hidePlotter();
-		
-		plot = null;
+		if(doPlot)
+			doPlot = false;
 	}
 
 	
@@ -69,7 +82,7 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 		String[] hexStrSplit = s.toString().split(",");
    		
   		// Zeichnen eines xy-Plots
-  		if(plot.isVisible())
+  		if(plot.isVisible() && doPlot)
   			plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
 	}
 

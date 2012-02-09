@@ -32,6 +32,7 @@ import gnu.io.UnsupportedCommOperationException;
 import java.awt.Component;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Scanner;
 import java.util.TooManyListenersException;
@@ -73,6 +74,7 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	
 	// read buffer, streams and scanner 
 	private InputStream inputStream;
+	private OutputStream outputStream;
 	private Scanner scanner;
 
 	// print the control-messages
@@ -326,4 +328,9 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	{
 		return gInterface.isPlugin();
 	}
+	
+	public OutputStream getOutputStream() {
+		return outputStream;
+	}
+
 }

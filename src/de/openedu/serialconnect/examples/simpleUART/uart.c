@@ -6,8 +6,8 @@
 //Serielle Schnittstelle initialisieren	// OK
 void usart_init(uint16_t baud) {
 
-	const uint32_t freq_osz=8000000L;	//Taktfrequenz 8MHz
-//	const uint32_t freq_osz=´16000000L;	//Taktfrequenz 16MHz
+//	const uint32_t freq_osz=8000000L;	//Taktfrequenz 8MHz
+	const uint32_t freq_osz=16000000L;	//Taktfrequenz 16MHz
 
 	uint16_t baud_rate;
 

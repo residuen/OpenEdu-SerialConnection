@@ -23,7 +23,7 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 
 	private JCheckBox plotMode = null;
 	private BufferedWriter fileWriter = null;
-	private XYPlotter plot = null;
+	private XYPlotter plot= new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
 	
 	public Plugin_XYPlotter()
 	{		
@@ -44,14 +44,15 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 		if(plot == null)
 		{
 			System.out.println("new plotter");
-			plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);	
-			plot.setScopeMode(false);
-			plot.addWindowListener(this);
-			plot.showPlotter();
+			plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);
 		}
+		
+		plot.setScopeMode(false);
+		plot.addWindowListener(this);
+		plot.showPlotter();
 	}
 	
-	private void closeInitXYPlotter()
+	private void closeXYPlotter()
 	{
 		System.out.println("close plotter");
 		
@@ -84,7 +85,7 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 		if(plotMode.isSelected())
 			initXYPlotter();
 		else
-			closeInitXYPlotter();
+			closeXYPlotter();
 
 	}
 
@@ -93,7 +94,7 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 		
 		plotMode.setSelected(false);
 		
-		closeInitXYPlotter();
+		closeXYPlotter();
 	}
 
 	@Override

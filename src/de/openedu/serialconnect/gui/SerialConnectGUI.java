@@ -42,14 +42,19 @@ public class SerialConnectGUI extends JFrame implements WindowListener
 		
 		JTabbedPane tp = new JTabbedPane();
 		
+		Uart_Gui ug = new Uart_Gui();
+		Plugin_Gui pg = new Plugin_Gui();
+
+		ug.setPlugins(pg.getPlugins());
+		
 		setLayout(new BorderLayout());
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(320, 360);
 		addWindowListener(this);
 		
-		tp.add(new Uart_Gui(), "UART-Init");
-		tp.add(new Plugin_Gui(), "Select Plugins");
+		tp.add(ug, "UART-Init");
+		tp.add(pg, "Select Plugins");
 		
 		add(tp);
 		

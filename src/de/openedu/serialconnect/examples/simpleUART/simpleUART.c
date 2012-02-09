@@ -24,11 +24,11 @@ int main(void)
 
 	while(1)
 	{
-	//	usart_putf(x,6,4);		// Ausgabe von x
-	//	usart_puts(",");		// Ausgabe des Kommas
-	//	usart_putf(sin(x),6,4);	// Berechnen und ausgeben von Sinus x
-	//	usart_puts("\n");		// Zeilenumbruch senden
-		usart_puts("Hallo Welt! \n");
+		usart_putf(x,6,4);		// Ausgabe von x
+		usart_puts(",");		// Ausgabe des Kommas
+		usart_putf(sin(x),6,4);	// Berechnen und ausgeben von Sinus x
+		usart_puts("\n");		// Zeilenumbruch senden
+	//	usart_puts("Hallo Welt! \n");
 		blink();				// Signal wechseln	
 
 		_delay_ms(1000);		// Wartezeit bis zum naechsten Senden

@@ -3,10 +3,12 @@ package de.openedu.serialconnect.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
 import de.openedu.serialconnect.connection.SerialConnect;
+import de.openedu.serialconnect.plugins.Plugin;
 
 public class Uart_Gui extends JPanel implements ActionListener, MessageIO, WindowListener
 {
@@ -25,6 +27,8 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 	
 	private BufferedWriter fileWriter = null;
 	
+	private ArrayList<Plugin> plugins = null;
+
 	public Uart_Gui()
 	{		
 		setLayout(new BorderLayout());
@@ -179,6 +183,9 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 	
 	public void message(final String s) {
 		
+		for(Plugin p : plugins)
+			p.receiveData(s);
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			public void run() {
@@ -194,6 +201,10 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 				}
 			}
 		});
+	}
+
+	public void setPlugins(ArrayList<Plugin> plugins) {
+		this.plugins = plugins;
 	}
 
 	@Override

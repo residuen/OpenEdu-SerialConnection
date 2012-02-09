@@ -50,6 +50,10 @@ public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, Win
 		add(vBox, BorderLayout.NORTH);
 	}
 	
+	public ArrayList<Plugin> getPlugins() {
+		return plugins;
+	}
+
 	public void actionPerformed(ActionEvent arg0)
 	{
 		String cmd = arg0.getActionCommand();

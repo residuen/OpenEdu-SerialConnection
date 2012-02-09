@@ -23,7 +23,6 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 
 	private JCheckBox plotMode = null;
 	private BufferedWriter fileWriter = null;
-	private XYPlotter plot = null;
 	
 	public Plugin_Avr_IO()
 	{		
@@ -39,37 +38,21 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 		add(plotMode);
 	}
 	
-	private void initXYPlotter()
+	private void initIOView()
 	{
-		if(plot == null)
-		{
-			System.out.println("new plotter");
-			plot = new XYPlotter(JFrame.DISPOSE_ON_CLOSE);	
-			plot.setScopeMode(false);
-			plot.addWindowListener(this);
-			plot.showPlotter();
-		}
+		
 	}
 	
-	private void closeInitXYPlotter()
+	private void closeIOView()
 	{
-		System.out.println("close plotter");
 		
-		if(plot != null)
-			plot.hidePlotter();
-		
-		plot = null;
 	}
 
 	
 	@Override
 	public void receiveData(String s) {
 		
-		String[] hexStrSplit = s.toString().split(",");
-   		
-  		// Zeichnen eines xy-Plots
-  		if(plot.isVisible())
-  			plot.addFunctionValue(Double.parseDouble(hexStrSplit[0]), Double.parseDouble(hexStrSplit[1]));
+//		System.out.println("Plugin_Avr_IO: "+s);
 	}
 
 	@Override
@@ -82,9 +65,9 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	public void actionPerformed(ActionEvent arg0) {
 		
 		if(plotMode.isSelected())
-			initXYPlotter();
+			initIOView();
 		else
-			closeInitXYPlotter();
+			closeIOView();
 
 	}
 
@@ -93,7 +76,7 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 		
 		plotMode.setSelected(false);
 		
-		closeInitXYPlotter();
+		closeIOView();
 	}
 
 	@Override

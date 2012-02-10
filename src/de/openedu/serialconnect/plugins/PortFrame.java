@@ -3,6 +3,7 @@ package de.openedu.serialconnect.plugins;
 import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -15,17 +16,17 @@ public class PortFrame extends JFrame implements ComponentListener
 //	private SharedData sharedData = null;
 	private HashMap<String, IOInterface> ioPortList = null;
 	
-	public PortFrame(String arg0, HashMap<String, IOInterface> ioPortList)
+	public PortFrame(String arg0, HashMap<String, IOInterface> ioPortList, ArrayList<String> keys)
 	{
 		super(arg0);
 		
 		this.ioPortList = ioPortList;
 //		this.sharedData = sharedData;
 
-		initFrame();
+		initFrame(keys);
 	}
 
-	public void initFrame() //SharedData sharedData)
+	public void initFrame(ArrayList<String> keys) //SharedData sharedData)
 	{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setResizable(false);
@@ -38,7 +39,7 @@ public class PortFrame extends JFrame implements ComponentListener
 		
 //		System.out.println("sharedData.getIoPortList().size()="+sharedData.getIoPortList().size());
 		
-		for(String io : ioPortList.keySet()) //sharedData.getIoPortList())
+		for(String io : keys) //ioPortList.keySet()) //sharedData.getIoPortList())
 		{
 			cTest.add((Component)ioPortList.get(io));
 		}

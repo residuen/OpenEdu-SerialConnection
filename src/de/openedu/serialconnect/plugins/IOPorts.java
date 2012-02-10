@@ -4,20 +4,31 @@ public class IOPorts implements IOInterface
 {
 	private boolean[] ports = new boolean[8];
 	
-	private int ioId = 0;
+	private String ioId = "0";
+	
+	private int maxValue = 0;
 	
 	public IOPorts()
 	{
 		
 	}
 	
-	public IOPorts(int ioId, int bitRange)
+	public IOPorts(int bitRange)
+	{
+		this.ports = new boolean[bitRange];
+		
+		solveMaximum();
+	}
+	
+	public IOPorts(String ioId, int bitRange)
 	{
 		this.ioId = ioId;
 		this.ports = new boolean[bitRange];
+		
+		solveMaximum();
 	}
 	
-	public IOPorts(int ioId, boolean[] preset)
+	public IOPorts(String ioId, boolean[] preset)
 	{
 		this.ioId = ioId;
 		this.ports = preset.clone();
@@ -34,10 +45,16 @@ public class IOPorts implements IOInterface
 	public Boolean setBit(int bit, boolean state)
 	{
 		if(bit >= ports.length)
+		{	
+			solveMaximum();
+
 			return null;
+		}
 		else
 		{
 			ports[bit] = state;
+			
+			solveMaximum();
 			
 			return ports[bit];
 		}
@@ -60,8 +77,33 @@ public class IOPorts implements IOInterface
 		}
 	}
 	
-	public int getId()
+	public String getId()
 	{
 		return ioId;
 	}
+	
+	public int getValue()
+	{
+		int v = 0;
+		
+		for(int i=0, n=ports.length; i<ports.length; i++)
+		{
+//			System.out.print((ports[n-i-1] ? 1 : 0));
+			if(ports[n-i-1])
+				v += Math.pow(2, n-i-1);
+		}
+//		System.out.println("");
+		return v;
+	}
+	
+	private void solveMaximum()
+	{
+		maxValue = (int)Math.pow(2, ports.length);
+	}
+	
+	public int getMaxValue()
+	{
+		return maxValue;
+	}
+	
 }

@@ -184,12 +184,16 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 	public void message(final String s) {
 		
 		for(Plugin p : plugins)
-			p.receiveData(s);
+			if(p.isEnable())
+				p.receiveData(s);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			public void run() {
 				
+//				for(Plugin p : plugins)
+//					p.receiveData(s);
+
 				if(showValues.isSelected())
 				{
 					textArea.append(s+"\n");

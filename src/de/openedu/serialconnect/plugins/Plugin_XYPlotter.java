@@ -93,6 +93,12 @@ public class Plugin_XYPlotter extends JPanel implements Plugin, ActionListener, 
 	}
 
 	@Override
+	public boolean isEnable() {
+
+		return plotMode.isSelected();
+	}
+
+	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
 		if(plotMode.isSelected())

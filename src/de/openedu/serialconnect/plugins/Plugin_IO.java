@@ -7,22 +7,24 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, WindowListener {
+public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowListener {
 
 	private HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
+	private ArrayList<String> keys = new ArrayList<String>();
 
 	private JCheckBox avrMode = null;
 //	private BufferedWriter fileWriter = null;
 	
 	private PortFrame portFrame = null;
 	
-	public Plugin_Avr_IO()
+	public Plugin_IO()
 	{		
 		setLayout(new BorderLayout());
 				
@@ -31,19 +33,23 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	
 	private void initComponents()
 	{
-		avrMode = new JCheckBox("AVR-IO", false);
+		avrMode = new JCheckBox("Debug ATmega16/32", false);
 		avrMode.addActionListener(this);
 		add(avrMode);
 	}
 
 	private void initIOView()
 	{	
-		ioPortList.put(Integer.toString(0), new Output(0, new IOPorts()));
-		ioPortList.put(Integer.toString(1), new Output(1, new IOPorts()));
-		ioPortList.put(Integer.toString(2), new Output(2, new IOPorts()));
-		ioPortList.put(Integer.toString(3), new Output(3, new IOPorts()));
+//		keys.add("porta");
+		keys.add("portb");
+		keys.add("portc");
+		keys.add("portd");
 		
-		portFrame = new PortFrame("AVR_DEBUG_IO", ioPortList);
+		for(String s : keys)
+			ioPortList.put(s, new Output(s, "OUTPUT", new IOPorts()));
+		
+		portFrame = new PortFrame("DEBUG_IO", ioPortList, keys);
+		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}
 
@@ -56,32 +62,24 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	@Override
 	public void receiveData(String s) {
 		
-//		String expr = "";
-//		System.out.println(s);
-//		System.out.println("Plugin_Avr_IO: "+s);
-		
 		String swap = null;
 		
-		if(s.indexOf('[') ==0 && s.indexOf(']')>0)
+		if(s.contains("port") && s.indexOf('[') == 0 && s.indexOf(']')>0)
 		{
 			swap = s.substring(1, s.length()-1);
 			
-			if(swap.contains("port"))
-				portMatcher(swap.substring(4, swap.length()));
-			
-//			System.out.println(swap);
+//			if(swap.contains("port"))
+			portMatcher(swap.substring(0, swap.length()));
 		}
-//			System.out.println(s.indexOf('[') >=0 && s.indexOf(']')>0);// +" "+ s.contains("\\]"));
 	}
 	
 	private void portMatcher(String s)
 	{
 		String[] sp = s.split(":");
-		int id = sp[0].equals("a") ? 0 : (sp[0].equals("b") ? 1 : (sp[0].equals("c") ? 2 : (sp[0].equals("d") ? 3 : -1)));
 		
-//		System.out.println(s+ " "+sp[0]+" "+id+" "+Integer.parseInt(sp[1], 16));
+//		System.out.println(s+ " "+sp[0]+" "+Integer.parseInt(sp[1], 16));
 		
-		ioPortList.get(Integer.toString(id)).setAllBit(int2BoolArr(Integer.toBinaryString(Integer.parseInt(sp[1], 16))));
+		ioPortList.get(sp[0]).setAllBit(int2BoolArr(Integer.toBinaryString(Integer.parseInt(sp[1], 16))));
 	}
 	
 	private boolean[] int2BoolArr(String v)
@@ -108,6 +106,12 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	public void sendData(OutputStream outputStream) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isEnable() {
+
+		return avrMode.isSelected();
 	}
 
 	@Override

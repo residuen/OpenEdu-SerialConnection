@@ -67,21 +67,15 @@ public class Plugin_Save2Hd extends JPanel implements Plugin, ActionListener {
 
 	
 	@Override
-	public void receiveData(String s) {
+	public void receiveData(final String s) {
 		
-//		SwingUtilities.invokeLater(new Runnable() {
-//			
-//			public void run() {
-				
-				if(saveMode.isSelected())
-				{
-					try {
-						fileWriter.append(s);
-						fileWriter.newLine();
-					} catch (IOException e) { e.printStackTrace(); }
-				}
-//			}
-//		});
+		if(saveMode.isSelected())
+		{
+			try {
+				fileWriter.append(s);
+				fileWriter.newLine();
+			} catch (IOException e) { e.printStackTrace(); }
+		}
 	}
 
 	@Override
@@ -98,6 +92,12 @@ public class Plugin_Save2Hd extends JPanel implements Plugin, ActionListener {
 		else
 			closeDataWrite();
 
+	}
+
+	@Override
+	public boolean isEnable() {
+		// TODO Auto-generated method stub
+		return saveMode.isSelected();
 	}
 
 }

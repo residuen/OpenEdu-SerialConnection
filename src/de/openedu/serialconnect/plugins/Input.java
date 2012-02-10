@@ -29,26 +29,24 @@ public class Input extends JComponent implements IOInterface, MouseListener
 
 //	private SharedData sharedData = null;
 	
-	private int id = 0;
+	private String id = "0";
 	
-	public Input(int ioId, IOPorts ports) //, SharedData sharedData)
+	public Input(String ioId, IOPorts ports)
 	{
 		this.id = ioId;
 		this.ports = ports;
-//		this.sharedData = sharedData;
 		
 		init();
 	}
 	
-	public Input(int ioId, int bitRange) //, SharedData sharedData)
+	public Input(String ioId, int bitRange)
 	{
 		this.ports = new IOPorts(ioId, new boolean[bitRange]);
-//		this.sharedData = sharedData;
 		
 		init();
 	}
 	
-	public Input(int ioId, boolean[] preset) // , SharedData sharedData)
+	public Input(String ioId, boolean[] preset) // , SharedData sharedData)
 	{
 		this.id = ioId;
 		this.ports = new IOPorts(this.id, preset);
@@ -85,7 +83,7 @@ public class Input extends JComponent implements IOInterface, MouseListener
 	}
 	
 	@Override
-	public int getId()
+	public String getId()
 	{
 		return ports.getId();
 	}

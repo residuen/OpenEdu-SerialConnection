@@ -12,33 +12,50 @@ import javax.swing.JComponent;
 
 public class Output extends JComponent implements IOInterface
 {
+	private final int SPACER_LEFT = 3;
+	private final int SPACER_TOP = SPACER_LEFT;
+	
 	private IOPorts ports = null;
 	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
 	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
 	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
 	private String[] portNames = new String[] {"A", "B", "C", "D" };
 	
-	private int id = 0;
+	private int id = -1;
+	private String idAsSting = null;
+	private String portName = "";
 	
-	public Output(int ioId, IOPorts ports)
+	public Output(int ioId, String portName, IOPorts ports)
 	{
 		this.id = ioId;
+		this.portName = portName;
 		this.ports = ports;
 		
 		init();
 	}
 	
-	public Output(int ioId, int bitRange)
+	public Output(String ioIdAsString, String portName, IOPorts ports)
 	{
-		this.ports = new IOPorts(ioId, new boolean[bitRange]);
+		this.idAsSting = ioIdAsString;
+		this.portName = portName;
+		this.ports = ports;
+		
+		init();
+	}
+
+	public Output(int ioId, String portName, int bitRange)
+	{
+		this.portName = portName;
+		this.ports = new IOPorts(idAsSting, new boolean[bitRange]);
 		
 		init();
 	}
 	
-	public Output(int ioId, boolean[] preset)
+	public Output(int ioId, String portName, boolean[] preset)
 	{
 		this.id = ioId;
-		this.ports = new IOPorts(this.id, preset);
+		this.portName = portName;
+		this.ports = new IOPorts(Integer.toString(ioId), preset);
 		
 		init();
 	}
@@ -74,7 +91,7 @@ public class Output extends JComponent implements IOInterface
 	}
 	
 	@Override
-	public int getId()
+	public String getId()
 	{
 		return ports.getId();
 	}
@@ -99,20 +116,26 @@ public class Output extends JComponent implements IOInterface
 //			System.out.println(bool[i]);
 			
 			if(bool[i])
-				g2d.drawImage(led_on, 0, i*led_on.getHeight(null), null);
+				g2d.drawImage(led_on, SPACER_LEFT, SPACER_TOP + i*led_on.getHeight(null), null);
 			else
-				g2d.drawImage(led_off, 0, i*led_off.getHeight(null), null);
+				g2d.drawImage(led_off, SPACER_LEFT, SPACER_TOP + i*led_off.getHeight(null), null);
 			
-			g2d.drawString(" P"+portNames[id]+" "+i, led_on.getWidth(null), (int)(i*led_on.getHeight(null) + fontHeight));
+			if(id == -1)
+				g2d.drawString(" "+idAsSting.toUpperCase()+" "+i, SPACER_LEFT + led_on.getWidth(null), SPACER_TOP + (int)(i*led_on.getHeight(null) + fontHeight));
+			else
+				g2d.drawString(" P"+portNames[id]+" "+i, SPACER_LEFT + led_on.getWidth(null), SPACER_TOP + (int)(i*led_on.getHeight(null) + fontHeight));
 		}
 		
-		g2d.drawString(" Output", 0, (++i)*led_on.getHeight(null));
-		g2d.drawString("  PORT"+portNames[id], 0, (++i)*led_on.getHeight(null));
+		g2d.drawString(" "+portName, SPACER_LEFT, SPACER_TOP + (++i)*led_on.getHeight(null));
+		
+		if(id == -1)
+			g2d.drawString(" "+idAsSting.toUpperCase(), SPACER_LEFT, SPACER_TOP + (++i)*led_on.getHeight(null));
+		else
+			g2d.drawString(" PORT"+portNames[id], SPACER_LEFT, SPACER_TOP + (++i)*led_on.getHeight(null));
 		
 		g2d.setColor(Color.GRAY);
 		g2d.setStroke(new BasicStroke(2.0f));
 		g2d.drawRect(0, 0, background.getWidth(null), 2*background.getHeight(null));
 		g2d.drawRect(1, 1, background.getWidth(null)-1, 2*background.getHeight(null)-1);
-		
 	}
 }

@@ -6,4 +6,5 @@ public interface Plugin {
 	
 	public void receiveData(String res);
 	public void sendData(OutputStream outputStream);
+	public boolean isEnable();
 }

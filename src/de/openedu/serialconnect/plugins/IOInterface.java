@@ -6,5 +6,5 @@ public interface IOInterface
 	public Boolean setBit(int bit, boolean state);
 	public boolean[] getAllBit();
 	public Boolean setAllBit(boolean[] states);
-	public int getId();
+	public String getId();
 }

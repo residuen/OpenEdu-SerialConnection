@@ -2,6 +2,8 @@ package de.openedu.serialconnect.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -11,9 +13,11 @@ import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import de.openedu.serialconnect.plugins.Plugin;
-import de.openedu.serialconnect.plugins.Plugin_Avr_IO;
+import de.openedu.serialconnect.plugins.Plugin_ADC;
+import de.openedu.serialconnect.plugins.Plugin_IO;
 import de.openedu.serialconnect.plugins.Plugin_Save2Hd;
 import de.openedu.serialconnect.plugins.Plugin_XYPlotter;
 
@@ -32,22 +36,18 @@ public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, Win
 	
 	private void initComponents()
 	{
+		JPanel panel = new JPanel(new GridLayout(3,2));
+		
 		plugins.add(new Plugin_Save2Hd());
 		plugins.add(new Plugin_XYPlotter());
-		plugins.add(new Plugin_Avr_IO());
-
-		Box vBox = Box.createVerticalBox();
-		Box hBox = Box.createHorizontalBox();
+		plugins.add(new Plugin_IO());
+		plugins.add(new Plugin_ADC(Plugin_ADC.REGISTER_MODE));
+		plugins.add(new Plugin_ADC(Plugin_ADC.PEAK_MODE));
 		
 		for(Plugin p : plugins)
-		{
-			hBox.add((Component) p);
-			vBox.add(Box.createVerticalStrut(5));
-			vBox.add(hBox);
-		}
+			panel.add((Component) p);
 		
-		
-		add(vBox, BorderLayout.NORTH);
+		add(panel, BorderLayout.NORTH);
 	}
 	
 	public ArrayList<Plugin> getPlugins() {
@@ -83,9 +83,9 @@ public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, Win
 	public void windowOpened(WindowEvent arg0) { }
 
 	@Override
-	public void message(String s) {
+	public void message(final String s) {
 
-		for(Plugin p : plugins)
+		for(final Plugin p : plugins)
 		{
 			p.receiveData(s);
 		}

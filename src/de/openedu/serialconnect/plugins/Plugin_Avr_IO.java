@@ -6,23 +6,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
-import de.openedu.serialconnect.lib.XYPlotter;
 
 public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, WindowListener {
 
-	private JCheckBox plotMode = null;
-	private BufferedWriter fileWriter = null;
+	private HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
+
+	private JCheckBox avrMode = null;
+//	private BufferedWriter fileWriter = null;
+	
+	private PortFrame portFrame = null;
 	
 	public Plugin_Avr_IO()
 	{		
@@ -33,26 +31,77 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	
 	private void initComponents()
 	{
-		plotMode = new JCheckBox("AVR-IO", false);
-		plotMode.addActionListener(this);
-		add(plotMode);
-	}
-	
-	private void initIOView()
-	{
-		
-	}
-	
-	private void closeIOView()
-	{
-		
+		avrMode = new JCheckBox("AVR-IO", false);
+		avrMode.addActionListener(this);
+		add(avrMode);
 	}
 
-	
+	private void initIOView()
+	{	
+		ioPortList.put(Integer.toString(0), new Output(0, new IOPorts()));
+		ioPortList.put(Integer.toString(1), new Output(1, new IOPorts()));
+		ioPortList.put(Integer.toString(2), new Output(2, new IOPorts()));
+		ioPortList.put(Integer.toString(3), new Output(3, new IOPorts()));
+		
+		portFrame = new PortFrame("AVR_DEBUG_IO", ioPortList);
+		portFrame.setVisible(true);
+	}
+
+	private void closeIOView()
+	{
+		portFrame.setVisible(false);
+		portFrame.dispose();
+	}
+
 	@Override
 	public void receiveData(String s) {
 		
+//		String expr = "";
+//		System.out.println(s);
 //		System.out.println("Plugin_Avr_IO: "+s);
+		
+		String swap = null;
+		
+		if(s.indexOf('[') ==0 && s.indexOf(']')>0)
+		{
+			swap = s.substring(1, s.length()-1);
+			
+			if(swap.contains("port"))
+				portMatcher(swap.substring(4, swap.length()));
+			
+//			System.out.println(swap);
+		}
+//			System.out.println(s.indexOf('[') >=0 && s.indexOf(']')>0);// +" "+ s.contains("\\]"));
+	}
+	
+	private void portMatcher(String s)
+	{
+		String[] sp = s.split(":");
+		int id = sp[0].equals("a") ? 0 : (sp[0].equals("b") ? 1 : (sp[0].equals("c") ? 2 : (sp[0].equals("d") ? 3 : -1)));
+		
+//		System.out.println(s+ " "+sp[0]+" "+id+" "+Integer.parseInt(sp[1], 16));
+		
+		ioPortList.get(Integer.toString(id)).setAllBit(int2BoolArr(Integer.toBinaryString(Integer.parseInt(sp[1], 16))));
+	}
+	
+	private boolean[] int2BoolArr(String v)
+	{
+		
+		for(int i=0, n=(8 - v.length()); i<n; i++)
+			v = "0" + v;
+		
+//		System.out.println(v);
+
+		char[] va = v.toCharArray();
+		int size = va.length;
+		boolean [] retV = new boolean[size];
+		
+		for(int i=0; i<size; i++)
+			retV[size-1-i] = (va[i]=='1') ? true : false;
+		
+//		System.out.println(retV);
+			
+		return retV;
 	}
 
 	@Override
@@ -64,7 +113,7 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
-		if(plotMode.isSelected())
+		if(avrMode.isSelected())
 			initIOView();
 		else
 			closeIOView();
@@ -74,7 +123,7 @@ public class Plugin_Avr_IO extends JPanel implements Plugin, ActionListener, Win
 	@Override
 	public void windowClosing(WindowEvent arg0) {
 		
-		plotMode.setSelected(false);
+		avrMode.setSelected(false);
 		
 		closeIOView();
 	}

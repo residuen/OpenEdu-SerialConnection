@@ -96,10 +96,7 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 		int adcl = Integer.parseInt(l, 16);
 		int adch = Integer.parseInt(h, 16);
 		int adcw = Integer.parseInt(h+l, 16);
-		int channel = Integer.parseInt(chn, 16);
-		
-//		System.out.println(s+ " "+sp[0]+" "+sp[1]+" "+sp[2]+" "+sp[3]+
-//		" |"+adcl+"|"+adch+"|"+channel+"|");
+//		int channel = Integer.parseInt(chn, 16);
 		
 		if(!viewMode)
 		{
@@ -113,8 +110,6 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 	private boolean[] int2BoolArr(String v, int radix)
 	{
 		v = buildByteString(v, radix);
-		
-//		System.out.println(v);
 
 		char[] va = v.toCharArray();
 		int size = va.length;
@@ -122,8 +117,6 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 		
 		for(int i=0; i<size; i++)
 			retV[size-1-i] = (va[i]=='1') ? true : false;
-		
-//		System.out.println(retV);
 			
 		return retV;
 	}

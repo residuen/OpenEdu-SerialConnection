@@ -23,14 +23,12 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 {
 	private final int SPACER_LEFT = 3;
 	private final int SPACER_TOP = SPACER_LEFT;
-	private final double HEIGHT_OF_BAR = 100;
+//	private final double HEIGHT_OF_BAR = 100;
 	
 	private Font font1 = getFont();
 	private Font font2 = new Font(Font.MONOSPACED, Font.BOLD, 18);
 	
 	private IOPorts ports = null;
-	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
-	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
 	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
 	private String[] portNames = new String[] {"A", "B", "C", "D" };
 	
@@ -79,7 +77,7 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 	
 	private void init()
 	{
-		setPreferredSize(new Dimension((int)(3.5*led_on.getWidth(null)), (int)(1.8*background.getHeight(null))));
+		setPreferredSize(new Dimension(16, (int)(1.8*background.getHeight(null))));
 	}
 
 	@Override
@@ -120,7 +118,7 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 	public void paint(Graphics g)
 	{
 		super.paintComponent(g);
-//		System.out.println(ports.getMaxValue());
+
 		Graphics2D g2d = (Graphics2D)g;
 		
 //		int fontHeight = getFont().getSize();
@@ -134,8 +132,6 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 		int barHeight = (int)(v*factor);
 		float cValue;
 		
-//		System.out.println(factor +" "+v);
-		
 		g2d.drawImage(background, 0, 0, null);
 		g2d.drawImage(background, 0, background.getHeight(null), null);
 		
@@ -146,8 +142,7 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 		for(i=0; i<=barHeight; i++)
 		{
 			cValue = (barHeight==0) ? 0f : (float)i/(float)barHeight;
-			
-//			System.out.println(cValue);
+
 			g2d.setColor(new Color(cValue, 0.1f*(cValue), 0.1f*(cValue)));
 			g2d.fillRect(2*SPACER_LEFT, 2*SPACER_TOP + i, 20, 1);
 		}

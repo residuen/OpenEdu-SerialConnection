@@ -10,14 +10,14 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
-public class Output extends JComponent implements IOInterface
+public class Segment extends JComponent implements IOInterface
 {
 	private final int SPACER_LEFT = 3;
 	private final int SPACER_TOP = SPACER_LEFT;
 	
 	private IOPorts ports = null;
-//	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
-//	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
+	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
+	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
 	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
 	private String[] portNames = new String[] {"A", "B", "C", "D" };
 	
@@ -25,38 +25,33 @@ public class Output extends JComponent implements IOInterface
 	private String idAsSting = null;
 	private String portName = "";
 	
-	private boolean viewMode = false;
+	public Segment(int ioId, String portName, IOPorts ports)
+	{
+		this.id = ioId;
+		this.portName = portName;
+		this.ports = ports;
+		
+		init();
+	}
 	
-	private OutRenderer outRenderer = new OutRenderer();
-	
-//	public Output(int ioId, String portName, IOPorts ports)
-//	{
-//		this.id = ioId;
-//		this.portName = portName;
-//		this.ports = ports;
-//		
-//		init();
-//	}
-	
-	public Output(String ioIdAsString, boolean viewMode, String portName, IOPorts ports)
+	public Segment(String ioIdAsString, String portName, IOPorts ports)
 	{
 		this.idAsSting = ioIdAsString;
-		this.viewMode= viewMode; 
 		this.portName = portName;
 		this.ports = ports;
 		
 		init();
 	}
 
-//	public Output(int ioId, String portName, int bitRange)
-//	{
-//		this.portName = portName;
-//		this.ports = new IOPorts(idAsSting, new boolean[bitRange]);
-//		
-//		init();
-//	}
+	public Segment(int ioId, String portName, int bitRange)
+	{
+		this.portName = portName;
+		this.ports = new IOPorts(idAsSting, new boolean[bitRange]);
+		
+		init();
+	}
 	
-	public Output(int ioId, String portName, boolean[] preset)
+	public Segment(int ioId, String portName, boolean[] preset)
 	{
 		this.id = ioId;
 		this.portName = portName;
@@ -67,8 +62,7 @@ public class Output extends JComponent implements IOInterface
 	
 	private void init()
 	{
-		setPreferredSize(new Dimension((int)(3.5*16), (int)(1.8*background.getHeight(null))));
-//		setPreferredSize(new Dimension((int)(3.5*led_on.getWidth(null)), (int)(1.8*background.getHeight(null))));
+		setPreferredSize(new Dimension((int)(3.5*led_on.getWidth(null)), (int)(1.8*background.getHeight(null))));
 	}
 
 	@Override
@@ -106,7 +100,7 @@ public class Output extends JComponent implements IOInterface
 	public void paint(Graphics g)
 	{
 		super.paintComponent(g);
-//		System.out.println(viewMode);
+//		System.out.println("paintThePort");
 		Graphics2D g2d = (Graphics2D)g;
 		
 		int fontHeight = getFont().getSize();
@@ -116,10 +110,29 @@ public class Output extends JComponent implements IOInterface
 		g2d.drawImage(background, 0, 0, null);
 		g2d.drawImage(background, 0, background.getHeight(null), null);
 		
-		if(viewMode == Plugin_IO.PIN_MODE)
-			outRenderer.drawOutPort(g2d,bool, idAsSting, portName, fontHeight);
+		int i;
+		for(i=0; i < bool.length; i++)
+		{
+//			System.out.println(bool[i]);
+			
+			g2d.drawRoundRect(SPACER_LEFT, SPACER_TOP, 20, 5, 5, 5);
+//			if(bool[i])
+//				g2d.drawImage(led_on, SPACER_LEFT, SPACER_TOP + i*led_on.getHeight(null), null);
+//			else
+//				g2d.drawImage(led_off, SPACER_LEFT, SPACER_TOP + i*led_off.getHeight(null), null);
+//			
+//			if(id == -1)
+//				g2d.drawString(" "+idAsSting.toUpperCase()+" "+i, SPACER_LEFT + led_on.getWidth(null), SPACER_TOP + (int)(i*led_on.getHeight(null) + fontHeight));
+//			else
+//				g2d.drawString(" P"+portNames[id]+" "+i, SPACER_LEFT + led_on.getWidth(null), SPACER_TOP + (int)(i*led_on.getHeight(null) + fontHeight));
+		}
+		
+		g2d.drawString(" "+portName, SPACER_LEFT, SPACER_TOP + (++i)*led_on.getHeight(null));
+		
+		if(id == -1)
+			g2d.drawString(" "+idAsSting.toUpperCase(), SPACER_LEFT, SPACER_TOP + (++i)*led_on.getHeight(null));
 		else
-			outRenderer.drawSegment(g2d, bool, idAsSting, portName, fontHeight);
+			g2d.drawString(" PORT"+portNames[id], SPACER_LEFT, SPACER_TOP + (++i)*led_on.getHeight(null));
 		
 		g2d.setColor(Color.GRAY);
 		g2d.setStroke(new BasicStroke(2.0f));

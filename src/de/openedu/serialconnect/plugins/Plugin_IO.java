@@ -16,29 +16,35 @@ import javax.swing.JPanel;
 
 public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowListener {
 
-	private HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
-	private ArrayList<String> keys = new ArrayList<String>();
+	public static final boolean PIN_MODE = false;
+	public static final boolean SEGMENT_MODE = true;
+	
+	protected HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
+	protected ArrayList<String> keys = new ArrayList<String>();
 
-	private JCheckBox avrMode = null;
-//	private BufferedWriter fileWriter = null;
+	protected JCheckBox avrMode = null;
 	
-	private PortFrame portFrame = null;
+	protected PortFrame portFrame = null;
 	
-	public Plugin_IO()
+	protected boolean viewMode = PIN_MODE;
+	
+	public Plugin_IO(boolean viewMode, String name)	
 	{		
+		this.viewMode = viewMode;
+
 		setLayout(new BorderLayout());
 				
-		initComponents();
+		initComponents(name);
 	}
 	
-	private void initComponents()
+	protected void initComponents(String name)
 	{
-		avrMode = new JCheckBox("Debug ATmega16/32", false);
+		avrMode = new JCheckBox(name, false);
 		avrMode.addActionListener(this);
 		add(avrMode);
 	}
 
-	private void initIOView()
+	protected void initIOView()
 	{	
 //		keys.add("porta");
 		keys.add("portb");
@@ -46,9 +52,9 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 		keys.add("portd");
 		
 		for(String s : keys)
-			ioPortList.put(s, new Output(s, "OUTPUT", new IOPorts()));
+			ioPortList.put(s, new Output(s, viewMode, "OUTPUT", new IOPorts()));
 		
-		portFrame = new PortFrame("DEBUG_IO", ioPortList, keys);
+		portFrame = new PortFrame("IO-Ports", ioPortList, keys);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}
@@ -87,8 +93,6 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 		
 		for(int i=0, n=(8 - v.length()); i<n; i++)
 			v = "0" + v;
-		
-//		System.out.println(v);
 
 		char[] va = v.toCharArray();
 		int size = va.length;

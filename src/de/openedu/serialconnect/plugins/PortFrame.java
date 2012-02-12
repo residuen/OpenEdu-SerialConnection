@@ -29,7 +29,7 @@ public class PortFrame extends JFrame implements ComponentListener
 	public void initFrame(ArrayList<String> keys) //SharedData sharedData)
 	{
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setResizable(false);
+//		setResizable(false);
 		addComponentListener(this);
 		setAlwaysOnTop(true);
 		setSize(ioPortList.keySet().size()*100, 220);

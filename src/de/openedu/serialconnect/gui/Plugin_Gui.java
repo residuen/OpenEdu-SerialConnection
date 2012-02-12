@@ -19,6 +19,7 @@ import de.openedu.serialconnect.plugins.Plugin;
 import de.openedu.serialconnect.plugins.Plugin_ADC;
 import de.openedu.serialconnect.plugins.Plugin_IO;
 import de.openedu.serialconnect.plugins.Plugin_Save2Hd;
+import de.openedu.serialconnect.plugins.Plugin_Segment;
 import de.openedu.serialconnect.plugins.Plugin_XYPlotter;
 
 public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, WindowListener
@@ -40,9 +41,10 @@ public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, Win
 		
 		plugins.add(new Plugin_Save2Hd());
 		plugins.add(new Plugin_XYPlotter());
-		plugins.add(new Plugin_IO());
-		plugins.add(new Plugin_ADC(Plugin_ADC.REGISTER_MODE));
-		plugins.add(new Plugin_ADC(Plugin_ADC.PEAK_MODE));
+		plugins.add(new Plugin_IO(Plugin_IO.PIN_MODE, "ATmega16/32 OUT"));
+		plugins.add(new Plugin_Segment(Plugin_IO.SEGMENT_MODE, "7-Segment"));
+		plugins.add(new Plugin_ADC(Plugin_ADC.REGISTER_MODE, "view ADC-reg"));
+		plugins.add(new Plugin_ADC(Plugin_ADC.PEAK_MODE, "adc peak-view"));
 		
 		for(Plugin p : plugins)
 			panel.add((Component) p);

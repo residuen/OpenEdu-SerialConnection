@@ -28,33 +28,31 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 	
 	private boolean viewMode = REGISTER_MODE;
 	
-	public Plugin_ADC(boolean viewMode)
+	public Plugin_ADC(boolean viewMode, String name)
 	{
 		this.viewMode = viewMode;
 		
 		setLayout(new BorderLayout());
 				
-		initComponents();
+		initComponents(name);
 	}
 	
-	private void initComponents()
+	private void initComponents(String name)
 	{
-		adcMode = new JCheckBox("Debug ADC", false);
+		adcMode = new JCheckBox(name, false);
 		adcMode.addActionListener(this);
 		add(adcMode);
 	}
 
 	private void initIOView()
 	{	
-		
-		
 		if(!viewMode)
 		{
 			keys.add("adcl");
 			keys.add("adch");
 			
 			for(String s : keys)
-				ioPortList.put(s, new Output(s, "channel 0", new IOPorts()));
+				ioPortList.put(s, new Output(s, viewMode, "channel 0", new IOPorts()));
 		}	
 		else
 		{
@@ -64,7 +62,7 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 				ioPortList.put(s, new ADCInput(s, "channel 0", new IOPorts(10)));
 		}
 		
-		portFrame = new PortFrame("DEBUG_ADC", ioPortList, keys);
+		portFrame = new PortFrame("ADC-Out", ioPortList, keys);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}

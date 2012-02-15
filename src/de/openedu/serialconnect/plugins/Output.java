@@ -25,7 +25,7 @@ public class Output extends JComponent implements IOInterface
 	private String idAsSting = null;
 	private String portName = "";
 	
-	private boolean viewMode = false;
+	private int viewMode = 0;
 	
 	private OutRenderer outRenderer = new OutRenderer();
 	
@@ -38,7 +38,7 @@ public class Output extends JComponent implements IOInterface
 //		init();
 //	}
 	
-	public Output(String ioIdAsString, boolean viewMode, String portName, IOPorts ports)
+	public Output(String ioIdAsString, int viewMode, String portName, IOPorts ports)
 	{
 		this.idAsSting = ioIdAsString;
 		this.viewMode= viewMode; 
@@ -67,7 +67,7 @@ public class Output extends JComponent implements IOInterface
 	
 	private void init()
 	{
-		setPreferredSize(new Dimension((int)(3.5*16), (int)(1.8*background.getHeight(null))));
+		setPreferredSize(new Dimension(97, 300)); //(int)(1.8*background.getHeight(null))));
 //		setPreferredSize(new Dimension((int)(3.5*led_on.getWidth(null)), (int)(1.8*background.getHeight(null))));
 	}
 
@@ -116,10 +116,11 @@ public class Output extends JComponent implements IOInterface
 		g2d.drawImage(background, 0, 0, null);
 		g2d.drawImage(background, 0, background.getHeight(null), null);
 		
-		if(viewMode == Plugin_IO.PIN_MODE)
+		if(viewMode == Plugin_IO.OUTPORT_PIN_MODE)
 			outRenderer.drawOutPort(g2d,bool, idAsSting, portName, fontHeight);
 		else
-			outRenderer.drawSegment(g2d, bool, idAsSting, portName, fontHeight);
+			if(viewMode == Plugin_IO.OUTPORT_SEGMENT_MODE)
+				outRenderer.drawSegment(g2d, bool, idAsSting, portName, fontHeight);
 		
 		g2d.setColor(Color.GRAY);
 		g2d.setStroke(new BasicStroke(2.0f));

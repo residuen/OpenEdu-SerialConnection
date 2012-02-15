@@ -32,22 +32,13 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
 	private String[] portNames = new String[] {"A", "B", "C", "D" };
 	
-	private int id = -1;
+	private int port = 0;
 	private String idAsSting = "ADC";
 	private String portName = "ADC";
 	
 	private double factor = 1;
 	
 	private Color veryLightGray = new Color(0.95f, 0.95f, 0.9f);
-	
-	public ADCInput(int ioId, String portName, IOPorts ports)
-	{
-		this.id = ioId;
-		this.portName = portName;
-		this.ports = ports;
-		
-		init();
-	}
 	
 	public ADCInput(String ioIdAsString, String portName, IOPorts ports)
 	{
@@ -66,18 +57,12 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 		init();
 	}
 	
-	public ADCInput(int ioId, String portName, boolean[] preset)
-	{
-		this.id = ioId;
-		this.portName = portName;
-		this.ports = new IOPorts(Integer.toString(ioId), preset);
-		
-		init();
-	}
-	
 	private void init()
 	{
-		setPreferredSize(new Dimension(16, (int)(1.8*background.getHeight(null))));
+		port = Integer.parseInt(portName.substring(portName.length()-1));
+//		System.out.println("port="+port);
+		
+		setPreferredSize(new Dimension(97, (int)(1.8*background.getHeight(null))));
 	}
 
 	@Override
@@ -154,10 +139,7 @@ public class ADCInput extends JComponent implements IOInterface, MouseListener
 		g2d.setFont(font1);
 		g2d.drawString(" "+portName, SPACER_LEFT, SPACER_TOP + getHeight()-48);
 		
-		if(id == -1)
-			g2d.drawString(" "+idAsSting.toUpperCase(), SPACER_LEFT, SPACER_TOP + getHeight()-32);
-		else
-			g2d.drawString(" PORT"+portNames[id], SPACER_LEFT, SPACER_TOP + getHeight()-32);
+		g2d.drawString(" "+idAsSting.toUpperCase(), SPACER_LEFT, SPACER_TOP + getHeight()-32);
 		
 		g2d.setFont(font2);
 		g2d.drawString(""+ports.getValue(), 3*SPACER_LEFT + 30, getHeight()/2 - 20);

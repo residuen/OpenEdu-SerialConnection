@@ -41,10 +41,10 @@ public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, Win
 		
 		plugins.add(new Plugin_Save2Hd());
 		plugins.add(new Plugin_XYPlotter());
-		plugins.add(new Plugin_IO(Plugin_IO.PIN_MODE, "ATmega16/32 OUT"));
-		plugins.add(new Plugin_Segment(Plugin_IO.SEGMENT_MODE, "7-Segment"));
-		plugins.add(new Plugin_ADC(Plugin_ADC.REGISTER_MODE, "view ADC-reg"));
-		plugins.add(new Plugin_ADC(Plugin_ADC.PEAK_MODE, "adc peak-view"));
+		plugins.add(new Plugin_IO(Plugin_IO.OUTPORT_PIN_MODE, "ATmega16/32 OUT"));
+		plugins.add(new Plugin_Segment(Plugin_IO.OUTPORT_SEGMENT_MODE, "7-Segment"));
+		plugins.add(new Plugin_ADC(Plugin_IO.ADC_REGISTER_MODE, "view ADC-reg"));
+		plugins.add(new Plugin_ADC(Plugin_IO.ADC_PEAK_MODE, "adc peak-view"));
 		
 		for(Plugin p : plugins)
 			panel.add((Component) p);
@@ -85,7 +85,7 @@ public class Plugin_Gui extends JPanel implements ActionListener, MessageIO, Win
 	public void windowOpened(WindowEvent arg0) { }
 
 	@Override
-	public void message(final String s) {
+	public void message(String s) {
 
 		for(final Plugin p : plugins)
 		{

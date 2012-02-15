@@ -16,9 +16,6 @@ import javax.swing.JPanel;
 
 public class Plugin_ADC extends JPanel implements Plugin, ActionListener, WindowListener {
 
-	public static final boolean REGISTER_MODE = false;
-	public static final boolean PEAK_MODE = true;
-	
 	private HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
 	private ArrayList<String> keys = new ArrayList<String>();
 
@@ -26,11 +23,18 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 	
 	private PortFrame portFrame = null;
 	
-	private boolean viewMode = REGISTER_MODE;
+	private int channel = 0;
 	
-	public Plugin_ADC(boolean viewMode, String name)
+	private int viewMode = Plugin_IO.ADC_REGISTER_MODE;
+	
+	public Plugin_ADC(int viewMode, String name) //, int channel)
 	{
 		this.viewMode = viewMode;
+//		this.channel = channel;
+		
+//		channel = name.length() - 2;
+		
+//		System.out.println("Kanal "+channel);
 		
 		setLayout(new BorderLayout());
 				
@@ -40,29 +44,31 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 	private void initComponents(String name)
 	{
 		adcMode = new JCheckBox(name, false);
+		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
+			adcMode.setEnabled(false);
 		adcMode.addActionListener(this);
 		add(adcMode);
 	}
 
 	private void initIOView()
 	{	
-		if(!viewMode)
-		{
-			keys.add("adcl");
-			keys.add("adch");
-			
-			for(String s : keys)
-				ioPortList.put(s, new Output(s, viewMode, "channel 0", new IOPorts()));
-		}	
-		else
-		{
-			keys.add("adcw");
-			
-			for(String s : keys)
-				ioPortList.put(s, new ADCInput(s, "channel 0", new IOPorts(10)));
-		}
+//		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
+//		{
+//			keys.add("adcl");
+//			keys.add("adch");
+//			
+//			for(String s : keys)
+//				ioPortList.put(s, new Output(s, viewMode, "channel 0", new IOPorts()));
+//		}	
+//		else
+//		{
+//			keys.add("adcw");
+//			
+//			for(String s : keys)
+//				ioPortList.put(s, new ADCInput(s, "channel 0", new IOPorts(10)));
+//		}
 		
-		portFrame = new PortFrame("ADC-Out", ioPortList, keys);
+		portFrame = new PortFrame((viewMode==Plugin_IO.ADC_PEAK_MODE ? "ADC-Peak view" : "ADC-Register view"), ioPortList, viewMode);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}
@@ -78,8 +84,11 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 		
 		String swap = null;
 		
+		System.out.println("s="+s);
+		
 		if(s.contains("adc") && s.indexOf('[') == 0 && s.indexOf(']')>0)
 		{
+//			if()
 			swap = s.substring(1, s.length()-1);
 
 			portMatcher(swap.substring(0, swap.length()));
@@ -94,14 +103,17 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 		int adcl = Integer.parseInt(l, 16);
 		int adch = Integer.parseInt(h, 16);
 		int adcw = Integer.parseInt(h+l, 16);
-//		int channel = Integer.parseInt(chn, 16);
+		int channel = Integer.parseInt(chn, 16);
 		
-		if(!viewMode)
+		System.out.println("channel="+channel);
+		
+		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
 		{
 			ioPortList.get("adcl").setAllBit(int2BoolArr(Integer.toBinaryString(adcl), 8));
 			ioPortList.get("adch").setAllBit(int2BoolArr(Integer.toBinaryString(adch), 8));
 		}
 		else
+			ioPortList.get("adc"+channel).setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
 			ioPortList.get("adcw").setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
 	}
 	

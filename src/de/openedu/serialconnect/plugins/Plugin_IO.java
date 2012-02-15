@@ -16,19 +16,20 @@ import javax.swing.JPanel;
 
 public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowListener {
 
-	public static final boolean PIN_MODE = false;
-	public static final boolean SEGMENT_MODE = true;
+	public static final int OUTPORT_PIN_MODE = 0;
+	public static final int OUTPORT_SEGMENT_MODE = 1;
+	public static final int ADC_REGISTER_MODE = 2;
+	public static final int ADC_PEAK_MODE = 3;
 	
 	protected HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
-	protected ArrayList<String> keys = new ArrayList<String>();
 
 	protected JCheckBox avrMode = null;
 	
 	protected PortFrame portFrame = null;
 	
-	protected boolean viewMode = PIN_MODE;
+	protected int viewMode = OUTPORT_PIN_MODE;
 	
-	public Plugin_IO(boolean viewMode, String name)	
+	public Plugin_IO(int viewMode, String name)	
 	{		
 		this.viewMode = viewMode;
 
@@ -45,16 +46,8 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 	}
 
 	protected void initIOView()
-	{	
-//		keys.add("porta");
-		keys.add("portb");
-		keys.add("portc");
-		keys.add("portd");
-		
-		for(String s : keys)
-			ioPortList.put(s, new Output(s, viewMode, "OUTPUT", new IOPorts()));
-		
-		portFrame = new PortFrame("IO-Ports", ioPortList, keys);
+	{			
+		portFrame = new PortFrame("IO-Ports", ioPortList, viewMode);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}
@@ -100,8 +93,6 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 		
 		for(int i=0; i<size; i++)
 			retV[size-1-i] = (va[i]=='1') ? true : false;
-		
-//		System.out.println(retV);
 			
 		return retV;
 	}

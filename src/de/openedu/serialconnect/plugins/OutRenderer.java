@@ -11,7 +11,7 @@ public class OutRenderer {
 	private final int SPACER_LEFT = 5;
 	private final int SPACER_TOP_OUTPUT = 10;
 	private final int SPACER_TOP_SEGMENT = 20;
-
+	
 	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
 	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
 //	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
@@ -43,39 +43,39 @@ public class OutRenderer {
 		int radix = 7;
 		int i = bool.length-1;
 				
-		Color color = null;
+//		Color color = null;
 		
-		g2d.setColor(bool[0] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[0] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT + radix, SPACER_TOP_SEGMENT, width, height, radix, radix);	// A
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT + radix, SPACER_TOP_SEGMENT, width, height, radix, radix);	// A
 		
-		g2d.setColor(bool[1] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[1] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT + width + radix, SPACER_TOP_SEGMENT + radix, height, width - radix, radix, radix);	// B
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT + width + radix, SPACER_TOP_SEGMENT + radix, height, width - radix, radix, radix);	// B
 
-		g2d.setColor(bool[2] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[2] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT + width + radix, SPACER_TOP_SEGMENT + radix + width, height, width - radix, radix, radix);	// C
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT + width + radix, SPACER_TOP_SEGMENT + radix + width, height, width - radix, radix, radix);	// C
 
-		g2d.setColor(bool[3] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[3] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT + radix, SPACER_TOP_SEGMENT + width + width, width, height, radix, radix);	// D
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT + radix, SPACER_TOP_SEGMENT + width + width, width, height, radix, radix);	// D
 
-		g2d.setColor(bool[4] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[4] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT, SPACER_TOP_SEGMENT + radix + width, height, width - radix, radix, radix);	// E
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT, SPACER_TOP_SEGMENT + radix + width, height, width - radix, radix, radix);	// E
 
-		g2d.setColor(bool[5] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[5] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT, SPACER_TOP_SEGMENT + radix, height, width - radix, radix, radix);	// F
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT, SPACER_TOP_SEGMENT + radix, height, width - radix, radix, radix);	// F
 
-		g2d.setColor(bool[6] ? Color.RED : Color.LIGHT_GRAY);
+		g2d.setColor(bool[6] ? Color.RED : Color.WHITE);
 		g2d.fillRoundRect(SPACER_LEFT + radix, SPACER_TOP_SEGMENT + width, width, height, radix, radix);	// G
 		g2d.setColor(Color.BLACK);
 		g2d.drawRoundRect(SPACER_LEFT + radix, SPACER_TOP_SEGMENT + width, width, height, radix, radix);	// G

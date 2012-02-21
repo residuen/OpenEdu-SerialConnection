@@ -19,7 +19,7 @@ public class Output extends JComponent implements IOInterface
 //	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
 //	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
 	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
-	private String[] portNames = new String[] {"A", "B", "C", "D" };
+//	private String[] portNames = new String[] {"A", "B", "C", "D" };
 	
 	private int id = -1;
 	private String idAsSting = null;
@@ -45,25 +45,19 @@ public class Output extends JComponent implements IOInterface
 		this.portName = portName;
 		this.ports = ports;
 		
-		init();
-	}
-
-//	public Output(int ioId, String portName, int bitRange)
-//	{
-//		this.portName = portName;
-//		this.ports = new IOPorts(idAsSting, new boolean[bitRange]);
-//		
-//		init();
-//	}
-	
-	public Output(int ioId, String portName, boolean[] preset)
-	{
-		this.id = ioId;
-		this.portName = portName;
-		this.ports = new IOPorts(Integer.toString(ioId), preset);
+		System.out.println("portName="+portName);
 		
 		init();
 	}
+
+//	public Output(int ioId, String portName, boolean[] preset)
+//	{
+//		this.id = ioId;
+//		this.portName = portName;
+//		this.ports = new IOPorts(Integer.toString(ioId), preset);
+//		
+//		init();
+//	}
 	
 	private void init()
 	{

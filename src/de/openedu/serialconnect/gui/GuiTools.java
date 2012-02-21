@@ -10,6 +10,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class GuiTools
 {
 	// Look&Feel java-arguments
+	public static final String NIMBUS ="nimbus";
 	public static final String GTK ="gtk";
 	public static final String MAC ="mac";
 	public static final String WIN ="win";
@@ -17,11 +18,12 @@ public class GuiTools
 	public static final String CROSS ="cross";
 	
 	// Look&Feel constants
-	private static final String GTK_LF   = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-	private static final String MAC_LF   = "com.sun.java.swing.plaf.mac.MacLookAndFeel";
-	private static final String WIN_LF   = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
-	private static final String SYS_LF   = UIManager.getSystemLookAndFeelClassName();
-	private static final String CROSS_LF = UIManager.getCrossPlatformLookAndFeelClassName();
+	private static final String NIMBUS_LF = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	private static final String GTK_LF    = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+	private static final String MAC_LF    = "com.sun.java.swing.plaf.mac.MacLookAndFeel";
+	private static final String WIN_LF    = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+	private static final String SYS_LF    = UIManager.getSystemLookAndFeelClassName();
+	private static final String CROSS_LF  = UIManager.getCrossPlatformLookAndFeelClassName();
 
 	public static void setLookAndFeel(String args[])
 	{
@@ -30,7 +32,12 @@ public class GuiTools
 		{
 			if(args!=null && args.length>0)
 			{
-				if(args[0].toLowerCase().indexOf(GTK)>-1)
+				if(args[0].toLowerCase().indexOf(NIMBUS)>-1)
+				{
+					System.out.println("Setting NIMBUS look&feel");
+						UIManager.setLookAndFeel(NIMBUS_LF);
+				}
+				else if(args[0].toLowerCase().indexOf(GTK)>-1)
 				{
 					System.out.println("Setting GTK look&feel");
 						UIManager.setLookAndFeel(GTK_LF);

@@ -7,6 +7,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -26,17 +27,22 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 	private ArrayList<JCheckBox> ioPorts = new ArrayList<JCheckBox>();
 	private ArrayList<JCheckBox> adcChanels = new ArrayList<JCheckBox>();
 	private JPanel cTest = new JPanel();
+	private String[] portNamesAtmega32 = new String[] { "porta", "portb", "portc", "portd" };
+	private String[] portNames8051 = new String[] { "p0", "p1", "p2", "p3" };
 
 	private int countPorts = 0;
 	
 	private int viewMode = 0;
 	
-	public PortFrame(String arg0, HashMap<String, IOInterface> ioPortList, int viewMode)
+	private int m_id = Plugin_IO.M_ATMEGA;
+	
+	public PortFrame(String arg0, HashMap<String, IOInterface> ioPortList, int viewMode, int m_id)
 	{
 		super(arg0);
 		
 		this.ioPortList = ioPortList;
 		this.viewMode = viewMode;
+		this.m_id = m_id;
 		
 		System.out.println("viewMode="+viewMode);
 
@@ -56,31 +62,24 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 		
 		JCheckBox jb;
 		
+		String name = (m_id==Plugin_IO.M_ATMEGA) ? Plugin_IO.M_ATMEGA_PREFIX : Plugin_IO.M_8051_PREFIX;
+		String[] arr = null;
+		
 		if(viewMode == Plugin_IO.OUTPORT_PIN_MODE || viewMode == Plugin_IO.OUTPORT_SEGMENT_MODE)
 		{
-			jb = new JCheckBox("porta");
-			jb.addItemListener(this);
-			jb.setName("porta");
-			ioPorts.add(jb);
-			portSelectPanel.add(jb);
-			
-			jb = new JCheckBox("portb");
-			jb.addItemListener(this);		
-			jb.setName("portb");
-			ioPorts.add(jb);
-			portSelectPanel.add(jb);
-			
-			jb = new JCheckBox("portc");
-			jb.addItemListener(this);		
-			jb.setName("portc");
-			ioPorts.add(jb);
-			portSelectPanel.add(jb);
-			
-			jb = new JCheckBox("portd");
-			jb.addItemListener(this);		
-			jb.setName("portd");
-			ioPorts.add(jb);
-			portSelectPanel.add(jb);
+			if(m_id==Plugin_IO.M_ATMEGA)
+				arr = portNamesAtmega32;
+			else
+				arr = portNames8051;
+
+			for(String s : arr)
+			{
+				jb = new JCheckBox(s);
+				jb.addItemListener(this);
+				jb.setName(s);
+				ioPorts.add(jb);
+				portSelectPanel.add(jb);
+			}
 
 			setSize(300, 260);
 			
@@ -148,13 +147,7 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 		
 //		System.out.println("sharedData.getIoPortList().size()="+sharedData.getIoPortList().size());
 				
-		add(cTest, BorderLayout.WEST);
-		
-//		if(viewMode == Plugin_IO.OUTPORT_PIN_MODE || viewMode == Plugin_IO.OUTPORT_SEGMENT_MODE)
-//			add(portSelectPanel, BorderLayout.SOUTH);
-//		else
-//			if(viewMode == Plugin_IO.ADC_REGISTER_MODE || viewMode == Plugin_IO.ADC_PEAK_MODE);
-//				add(adcSelectPanel, BorderLayout.SOUTH);
+		add(cTest, BorderLayout.WEST);		
 	}
 
 	@Override

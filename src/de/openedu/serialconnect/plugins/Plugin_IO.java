@@ -21,6 +21,16 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 	public static final int ADC_REGISTER_MODE = 2;
 	public static final int ADC_PEAK_MODE = 3;
 	
+	public static final int M_8051 = 4;
+	public static final int M_ATMEGA = 5;
+	
+	public static final String M_8051_PREFIX = "p";
+	public static final String M_ATMEGA_PREFIX = "port";
+	
+	protected int m_id = M_ATMEGA;
+	
+	private String portPrefix = M_ATMEGA_PREFIX;
+	
 	protected HashMap<String, IOInterface> ioPortList = new HashMap<String, IOInterface>();
 
 	protected JCheckBox avrMode = null;
@@ -29,9 +39,22 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 	
 	protected int viewMode = OUTPORT_PIN_MODE;
 	
-	public Plugin_IO(int viewMode, String name)	
+	public Plugin_IO(int viewMode, int m_id, String name)	
 	{		
 		this.viewMode = viewMode;
+		this.m_id = m_id;
+		
+		switch(m_id)
+		{
+			case M_8051:
+				portPrefix = M_8051_PREFIX;
+				break;
+			
+			case M_ATMEGA:
+				portPrefix = M_ATMEGA_PREFIX;
+				break;
+				
+		}
 
 		setLayout(new BorderLayout());
 				
@@ -47,7 +70,7 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 
 	protected void initIOView()
 	{			
-		portFrame = new PortFrame("IO-Ports", ioPortList, viewMode);
+		portFrame = new PortFrame("IO-Ports", ioPortList, viewMode, m_id);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}
@@ -63,8 +86,10 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 		
 		String swap = null;
 		
-		if(s.contains("port") && s.indexOf('[') == 0 && s.indexOf(']')>0)
+		if(s.contains(portPrefix) && s.indexOf('[') == 0 && s.indexOf(']')>0)
 		{
+//			System.out.println(s);
+			
 			swap = s.substring(1, s.length()-1);
 			
 //			if(swap.contains("port"))
@@ -76,7 +101,7 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 	{
 		String[] sp = s.split(":");
 		
-//		System.out.println(s+ " "+sp[0]+" "+Integer.parseInt(sp[1], 16));
+		System.out.println(s+ " "+sp[0]+" "+Integer.parseInt(sp[1], 16));
 		
 		ioPortList.get(sp[0]).setAllBit(int2BoolArr(Integer.toBinaryString(Integer.parseInt(sp[1], 16))));
 	}

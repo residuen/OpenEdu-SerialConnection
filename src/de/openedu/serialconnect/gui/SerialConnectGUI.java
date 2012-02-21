@@ -28,24 +28,19 @@ import javax.swing.SwingUtilities;
 import de.openedu.serialconnect.connection.SerialConnect;
 
 public class SerialConnectGUI extends JFrame implements WindowListener
-{
-	
-	
+{	
 	public SerialConnectGUI()
 	{
 		super("SerialConnect-GUI");
-		
-		if(System.getProperty("os.name").toLowerCase().indexOf("linux") >= 0)
-			GuiTools.setLookAndFeel(new String[] {"gtk"});
-		else if(System.getProperty("os.name").toLowerCase().indexOf("win") >= 0)
-			GuiTools.setLookAndFeel(new String[] {"win"});
+
+		GuiTools.setLookAndFeel(new String[] {"win"});
 		
 		JTabbedPane tp = new JTabbedPane();
 		
-		Uart_Gui ug = new Uart_Gui();
-		Plugin_Gui pg = new Plugin_Gui();
-
-		ug.setPlugins(pg.getPlugins());
+		Uart_Gui uart = new Uart_Gui();
+		DefaultPlugin_Gui defaultPlugin = new DefaultPlugin_Gui(uart.getPlugins(), DefaultPlugin_Gui.DEFAULT_PLUGIN);
+		DefaultPlugin_Gui m_atmega = new DefaultPlugin_Gui(uart.getPlugins(), DefaultPlugin_Gui.M_ATMEGA_PLUGIN);
+		DefaultPlugin_Gui m_8051 = new DefaultPlugin_Gui(uart.getPlugins(), DefaultPlugin_Gui.M_8051_PLUGIN);
 		
 		setLayout(new BorderLayout());
 		setAlwaysOnTop(true);
@@ -53,8 +48,10 @@ public class SerialConnectGUI extends JFrame implements WindowListener
 		setSize(320, 360);
 		addWindowListener(this);
 		
-		tp.add(ug, "UART-Init");
-		tp.add(pg, "Select Plugins");
+		tp.add(uart, "UART-Init");
+		tp.add(defaultPlugin, "Default Plugins");
+		tp.add(m_atmega, "Atmega Plugins");
+		tp.add(m_8051, "8051 Plugins");
 		
 		add(tp);
 		

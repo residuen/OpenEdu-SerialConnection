@@ -25,9 +25,9 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 	
 	private SerialConnect serialConnect = null;
 	
-	private BufferedWriter fileWriter = null;
+//	private BufferedWriter fileWriter = null;
 	
-	private ArrayList<Plugin> plugins = null;
+	private ArrayList<Plugin> plugins = new ArrayList<Plugin>();
 
 	public Uart_Gui()
 	{		
@@ -168,9 +168,6 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 			{
 				System.out.println("STOP serial-connection");
 				
-//				closeDataWrite();
-//				saveMode.setSelected(false);
-				
 				serialConnect.interrupt();
 				serialConnect = null;
 			}
@@ -183,16 +180,13 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 	
 	public void message(final String s) {
 		
-		for(Plugin p : plugins)
+		for(Plugin p : plugins)	// Uebergabe der Dsaten des SerialEvents an die aktiven Plugins
 			if(p.isEnable())
 				p.receiveData(s);
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			
 			public void run() {
-				
-//				for(Plugin p : plugins)
-//					p.receiveData(s);
 
 				if(showValues.isSelected())
 				{
@@ -209,6 +203,10 @@ public class Uart_Gui extends JPanel implements ActionListener, MessageIO, Windo
 
 	public void setPlugins(ArrayList<Plugin> plugins) {
 		this.plugins = plugins;
+	}
+
+	public ArrayList<Plugin> getPlugins() {
+		return plugins;
 	}
 
 	@Override

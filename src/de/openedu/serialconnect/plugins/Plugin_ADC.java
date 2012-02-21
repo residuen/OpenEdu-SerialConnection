@@ -27,9 +27,12 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 	
 	private int viewMode = Plugin_IO.ADC_REGISTER_MODE;
 	
-	public Plugin_ADC(int viewMode, String name) //, int channel)
+	private int m_id;
+	
+	public Plugin_ADC(int viewMode,  int m_id, String name) //, int channel)
 	{
 		this.viewMode = viewMode;
+		this.m_id = m_id;
 //		this.channel = channel;
 		
 //		channel = name.length() - 2;
@@ -68,7 +71,7 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 //				ioPortList.put(s, new ADCInput(s, "channel 0", new IOPorts(10)));
 //		}
 		
-		portFrame = new PortFrame((viewMode==Plugin_IO.ADC_PEAK_MODE ? "ADC-Peak view" : "ADC-Register view"), ioPortList, viewMode);
+		portFrame = new PortFrame((viewMode==Plugin_IO.ADC_PEAK_MODE ? "ADC-Peak view" : "ADC-Register view"), ioPortList, viewMode, m_id);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
 	}

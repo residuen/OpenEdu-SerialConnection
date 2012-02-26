@@ -101,7 +101,7 @@ public class Plugin_IO extends JPanel implements Plugin, ActionListener, WindowL
 	{
 		String[] sp = s.split(":");
 		
-		System.out.println(s+ " "+sp[0]+" "+Integer.parseInt(sp[1], 16));
+//		System.out.println("s="+s+ " "+sp[0]+" "+Integer.parseInt(sp[1], 16));
 		
 		ioPortList.get(sp[0]).setAllBit(int2BoolArr(Integer.toBinaryString(Integer.parseInt(sp[1], 16))));
 	}

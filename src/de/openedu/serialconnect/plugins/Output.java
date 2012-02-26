@@ -79,15 +79,26 @@ public class Output extends JComponent implements IOInterface
 	public Boolean setAllBit(boolean[] states) {
 		
 //		System.out.println("states:"+states);
+		Boolean retV = ports.setAllBit(states);
+		
+//		for(boolean b : states)
+//			System.out.print(b ? 1 : 0);
+//		
+//		System.out.println();
 		
 		repaint();
 		
-		return ports.setAllBit(states);
+		return retV;
 	}
 
 	@Override
 	public Boolean setBit(int bit, boolean state) {
-		return ports.setBit(bit, state);
+		
+		Boolean retV = ports.setBit(bit, state);
+		
+		repaint();
+		
+		return retV;
 	}
 	
 	@Override
@@ -100,7 +111,7 @@ public class Output extends JComponent implements IOInterface
 	public void paint(Graphics g)
 	{
 		super.paintComponent(g);
-//		System.out.println(viewMode);
+//		System.out.println("Zeichne Ausgang");
 		Graphics2D g2d = (Graphics2D)g;
 		
 		int fontHeight = getFont().getSize();
@@ -110,7 +121,7 @@ public class Output extends JComponent implements IOInterface
 		g2d.drawImage(background, 0, 0, null);
 		g2d.drawImage(background, 0, background.getHeight(null), null);
 		
-		if(viewMode == Plugin_IO.OUTPORT_PIN_MODE)
+		if(viewMode == Plugin_IO.OUTPORT_PIN_MODE || viewMode == Plugin_IO.ADC_REGISTER_MODE)
 			outRenderer.drawOutPort(g2d,bool, idAsSting, portName, fontHeight);
 		else
 			if(viewMode == Plugin_IO.OUTPORT_SEGMENT_MODE)

@@ -49,7 +49,7 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 		initFrame();
 	}
 
-	public void initFrame() //SharedData sharedData)
+	public void initFrame()
 	{
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -86,7 +86,7 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 			add(portSelectPanel, BorderLayout.SOUTH);
 		}
 		else
-		if(viewMode == Plugin_IO.ADC_REGISTER_MODE || viewMode == Plugin_IO.ADC_PEAK_MODE)
+		if(viewMode == Plugin_IO.ADC_PEAK_MODE)	// viewMode == Plugin_IO.ADC_REGISTER_MODE || 
 		{
 			adcSelectPanel.add(new JLabel("channel:"));
 			
@@ -141,6 +141,17 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 			setSize(400, 260);
 			
 			add(adcSelectPanel, BorderLayout.SOUTH);
+		}
+		else
+		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
+		{
+			ioPortList.put("adcl", new Output("adcl", viewMode, "adcl", new IOPorts(8)));
+			ioPortList.put("adch", new Output("adch", viewMode, "adch", new IOPorts(8)));
+
+			cTest.add((Component)ioPortList.get("adcl"));
+			cTest.add((Component)ioPortList.get("adch"));
+			
+			setSize(200, 260);
 		}
 
 		cTest.setLayout(new BoxLayout(cTest, BoxLayout.X_AXIS));
@@ -198,9 +209,17 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 		}
 		
 		// Zufuegen von Analogwert-Anzeigen
-		if(viewMode == Plugin_IO.ADC_REGISTER_MODE || viewMode == Plugin_IO.ADC_PEAK_MODE)
+//		if(viewMode == Plugin_IO.ADC_REGISTER_MODE) // || viewMode == Plugin_IO.ADC_PEAK_MODE)
+//		{
+//			ioPortList.put("adcl", new Output("adcl", viewMode, "adcl", new IOPorts(8)));
+//			ioPortList.put("adch", new Output("adch", viewMode, "adch", new IOPorts(8)));
+//
+//			cTest.add((Component)ioPortList.get("adcl"));
+//			cTest.add((Component)ioPortList.get("adch"));
+//		}
+		if(viewMode == Plugin_IO.ADC_PEAK_MODE) // else
 		{
-			System.out.println("ADC zufuegen");
+//			System.out.println("ADC zufuegen");
 			for(JCheckBox jb : adcChanels)
 			{
 				if(jb.isSelected())
@@ -209,28 +228,17 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 					
 					name = jb.getName();
 					
-					if(viewMode == Plugin_IO.ADC_PEAK_MODE)
-						ioPortList.put(name, new ADCInput("adcw", name, new IOPorts(10)));
-					else
-					{
-						ioPortList.put("adcl", new Output("adcl", viewMode, name, new IOPorts(10)));
-						ioPortList.put("adch", new Output("adch", viewMode, name, new IOPorts(10)));
-					}
-
+					ioPortList.put(name, new ADCInput("adcw", name, new IOPorts(10)));
 					cTest.add((Component)ioPortList.get(name));
-
+			
 					if(countPorts >= 5)
 						setSize(countPorts*100, 260);
 					else
 						setSize(400, 260);
 				}
 			}
-			
 		}
-		
-		
-		System.out.println(countPorts);
-		
+
 		this.validate();
 	}
 }

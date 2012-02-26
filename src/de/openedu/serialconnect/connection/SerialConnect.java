@@ -222,16 +222,18 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	 */
   	synchronized public void serialEvent(SerialPortEvent serialEvent)
 	{
-//  		String str = null;
+  		String str = null;
   		
   		String strTransformed = null;
   		
   		// Lesen solange Zeichenketten gesendet werden
  		while(scanner.hasNextLine())
 		{
-//	  		str = scanner.nextLine();
+	  		str = scanner.nextLine();
+ 			
+// 			System.out.println(str);
 	  			  		
-		  	strTransformed = gInterface.buildCurrentStream(scanner.nextLine().toCharArray());
+		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
 	  		
 		  	if(DEBUGMESSAGE)
 		  		System.out.println(strTransformed);

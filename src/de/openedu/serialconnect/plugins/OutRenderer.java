@@ -14,7 +14,6 @@ public class OutRenderer {
 	
 	private Image led_on = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-on.png"))).getImage();
 	private Image led_off = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/led-off.png"))).getImage();
-//	private Image background = (new ImageIcon(getClass().getResource("/de/openedu/serialconnect/plugins/images/blow-gray.png"))).getImage();
 
 	public void drawOutPort(Graphics2D g2d, boolean[] bool, String idAsSting, String portName, int fontHeight)
 	{
@@ -22,7 +21,7 @@ public class OutRenderer {
 		for(i=0; i < bool.length; i++)
 		{
 //			System.out.println(bool[i]);
-			
+//			System.out.println("Zeichne Ausgang");
 			if(bool[i])
 				g2d.drawImage(led_on, SPACER_LEFT, SPACER_TOP_OUTPUT + i*led_on.getHeight(null), null);
 			else

@@ -47,30 +47,14 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 	private void initComponents(String name)
 	{
 		adcMode = new JCheckBox(name, false);
-		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
-			adcMode.setEnabled(false);
+//		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
+//			adcMode.setEnabled(false);
 		adcMode.addActionListener(this);
 		add(adcMode);
 	}
 
 	private void initIOView()
-	{	
-//		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
-//		{
-//			keys.add("adcl");
-//			keys.add("adch");
-//			
-//			for(String s : keys)
-//				ioPortList.put(s, new Output(s, viewMode, "channel 0", new IOPorts()));
-//		}	
-//		else
-//		{
-//			keys.add("adcw");
-//			
-//			for(String s : keys)
-//				ioPortList.put(s, new ADCInput(s, "channel 0", new IOPorts(10)));
-//		}
-		
+	{			
 		portFrame = new PortFrame((viewMode==Plugin_IO.ADC_PEAK_MODE ? "ADC-Peak view" : "ADC-Register view"), ioPortList, viewMode, m_id);
 		portFrame.addWindowListener(this);
 		portFrame.setVisible(true);
@@ -87,11 +71,10 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 		
 		String swap = null;
 		
-		System.out.println("s="+s);
+//		System.out.println("s="+s);
 		
 		if(s.contains("adc") && s.indexOf('[') == 0 && s.indexOf(']')>0)
 		{
-//			if()
 			swap = s.substring(1, s.length()-1);
 
 			portMatcher(swap.substring(0, swap.length()));
@@ -108,16 +91,18 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 		int adcw = Integer.parseInt(h+l, 16);
 		int channel = Integer.parseInt(chn, 16);
 		
-		System.out.println("channel="+channel);
+//		System.out.println("s="+s+ " "+sp[0]+" "+Integer.parseInt(sp[1], 16));
+//		System.out.println("channel="+channel+" mode="+viewMode);
 		
 		if(viewMode == Plugin_IO.ADC_REGISTER_MODE)
 		{
+//			System.out.println("ADC_REGISTER_MODE");
 			ioPortList.get("adcl").setAllBit(int2BoolArr(Integer.toBinaryString(adcl), 8));
 			ioPortList.get("adch").setAllBit(int2BoolArr(Integer.toBinaryString(adch), 8));
 		}
 		else
 			ioPortList.get("adc"+channel).setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
-			ioPortList.get("adcw").setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
+//			ioPortList.get("adcw").setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
 	}
 	
 	private boolean[] int2BoolArr(String v, int radix)

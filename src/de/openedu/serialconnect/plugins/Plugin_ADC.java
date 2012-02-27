@@ -101,8 +101,13 @@ public class Plugin_ADC extends JPanel implements Plugin, ActionListener, Window
 			ioPortList.get("adch").setAllBit(int2BoolArr(Integer.toBinaryString(adch), 8));
 		}
 		else
-			ioPortList.get("adc"+channel).setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
-//			ioPortList.get("adcw").setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
+		{
+//			System.out.println("(adch<<2) + (adcl&0x03)="+((adch<<2) + (adcl&0x03)));
+			if(m_id == Plugin_IO.M_8051)
+				ioPortList.get("adc"+channel).setAllBit(int2BoolArr(Integer.toBinaryString((adch<<2) + (adcl&0x03)), 10));
+			else
+				ioPortList.get("adc"+channel).setAllBit(int2BoolArr(Integer.toBinaryString(adcw), 10));
+		}
 	}
 	
 	private boolean[] int2BoolArr(String v, int radix)

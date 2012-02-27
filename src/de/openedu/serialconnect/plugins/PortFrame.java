@@ -209,14 +209,6 @@ public class PortFrame extends JFrame implements ComponentListener, ItemListener
 		}
 		
 		// Zufuegen von Analogwert-Anzeigen
-//		if(viewMode == Plugin_IO.ADC_REGISTER_MODE) // || viewMode == Plugin_IO.ADC_PEAK_MODE)
-//		{
-//			ioPortList.put("adcl", new Output("adcl", viewMode, "adcl", new IOPorts(8)));
-//			ioPortList.put("adch", new Output("adch", viewMode, "adch", new IOPorts(8)));
-//
-//			cTest.add((Component)ioPortList.get("adcl"));
-//			cTest.add((Component)ioPortList.get("adch"));
-//		}
 		if(viewMode == Plugin_IO.ADC_PEAK_MODE) // else
 		{
 //			System.out.println("ADC zufuegen");

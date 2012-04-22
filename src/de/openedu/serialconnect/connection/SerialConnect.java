@@ -63,6 +63,8 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	private char parityTyp = 'O';
 	private int dataBits = 8;
 	private float stopBits = 1;
+	private byte buffer[] = new byte[32768];	// Arduino-Style
+	private int bufferLast;	// Arduino-Style
 	
 	long startTime = 0;
 	
@@ -220,30 +222,73 @@ public class SerialConnect extends Thread implements SerialPortEventListener
 	 * UART-Event:
 	 * Die gesendeten Daten werden als String empfangen und
 	 */
-  	synchronized public void serialEvent(SerialPortEvent serialEvent)
-	{
-  		String str = null;
-  		
-  		String strTransformed = null;
-  		
-  		// Lesen solange Zeichenketten gesendet werden
- 		while(scanner.hasNextLine())
-		{
-	  		str = scanner.nextLine();
- 			
-// 			System.out.println(str);
-	  			  		
-		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
-	  		
-		  	if(DEBUGMESSAGE)
-		  		System.out.println(strTransformed);
+//  	synchronized public void serialEvent(SerialPortEvent serialEvent)
+//	{
+//  		String str = null;
+//  		
+//  		String strTransformed = null;
+//  		
+//  		// Lesen solange Zeichenketten gesendet werden
+// 		while(scanner.hasNextLine())
+//		{
+//	  		str = scanner.nextLine();
+// 			
+//// 			System.out.println(str);
+//	  			  		
+//		  	strTransformed = gInterface.buildCurrentStream(str.toCharArray());
+//	  		
+//		  	if(DEBUGMESSAGE)
+//		  		System.out.println(strTransformed);
+//
+//		  	// Nachricht an Message-Componente
+//	  		((MessageIO)component).message(strTransformed);
+//		}			
+//	}
 
-		  	// Nachricht an Message-Componente
-	  		((MessageIO)component).message(strTransformed);
-		}			
-	}
+	// Arduino-Style
+	  synchronized public void serialEvent(SerialPortEvent serialEvent) {
 
-  	public SerialPort getPort() {
+		    if (serialEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+
+		      try {
+		        while (inputStream.available() > 0) {
+
+		          synchronized (buffer) {
+		            if (bufferLast == buffer.length) {
+		              byte temp[] = new byte[bufferLast << 1];
+		              System.arraycopy(buffer, 0, temp, 0, bufferLast);
+		              buffer = temp;
+		            }
+		            //buffer[bufferLast++] = (byte) input.read();
+//		            if(monitor == true)
+//		              System.out.print((char) inputStream.read());
+//		            if (this.consumer != null)
+//		              this.consumer.message("" + (char) input.read());
+		            
+		         // Nachricht an Message-Componente
+			  		((MessageIO)component).message(new String(buffer));
+		            
+		            /*
+		System.err.println(input.available() + " " +
+		((char) buffer[bufferLast-1]));
+		*/ //}
+		          }
+		        }
+		        //System.out.println("no more");
+
+		      } catch (IOException e) {
+		        System.out.println("serialEvent"+ e);
+		        //e.printStackTrace();
+		        //System.out.println("angry");
+		      }
+		      catch (Exception e) {
+		      }
+		    }
+		    //System.out.println("out of");
+		    //System.err.println("out of event " + serialEvent.getEventType());
+		  }
+
+ 	public SerialPort getPort() {
 		return port;
 	}
 

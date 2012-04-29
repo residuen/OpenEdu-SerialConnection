@@ -35,6 +35,7 @@ public class Goal {
 	public String toString()
 	{
 		return "[team1="+team1+",team2="+team2+",seconds="+seconds+"]";
+//		return ("[team1="+team1+",team2="+team2+",seconds="+seconds+"]").replace("[", "").replace("]", "");
 	}
 
 }

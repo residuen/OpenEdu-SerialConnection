@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import de.openedu.serialconnect.plugins.kicker.interfaces.VisuInterface;
-
 public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 
 	private String data = "Fill me";
@@ -28,38 +26,33 @@ public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 	
 	private Image background = Toolkit.getDefaultToolkit().getImage(getClass().getResource("Mittelkreis_800x480.png"));
 	
-	CanvasMenu cMenu = new CanvasMenu(this);
+	private CanvasMenu cMenu = new CanvasMenu(this);
 	
-	RoundRectangle2D.Double menuShape =  new RoundRectangle2D.Double(-13, -13, 75, 65, 25, 25);
-	RoundRectangle2D.Double restartShape =  new RoundRectangle2D.Double(-13, menuShape.getHeight() + 5, 75, 65, 25, 25);
-	RoundRectangle2D.Double exitShape =  new RoundRectangle2D.Double(-13, 480 - 65 + 13, 75, 65, 25, 25);
-	
+	private Color shapeColor = new Color(10284444);
+
+//	private RoundRectangle2D.Double goalShape;
+
 	public VisuPanel()
 	{
 		addMouseListener(this);
 		
-		resetView();
+		reset();
 		
-//		repaint();
+		repaint();
 	}
-	
-	private void resetView()
-	{
-		sTime = System.currentTimeMillis();
-		
-		goals.add(new Goal());
-		
 
-	}
-		
 	@Override
-	public void ResponseUartData(String data) {
+	public void responseUartData(String data) {
 
 		this.data = data;
+		
+		int a, b;
 		
 		long time = System.currentTimeMillis();
 		boolean checkData = data.contains("[") & data.contains("]");
 		Goal goal = new Goal();
+		
+		data.replace("[", "").replace("]", "");
 		
 		String[] splitData;
 		String[] splitSingle;
@@ -71,22 +64,27 @@ public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 			goal.setSeconds((time - sTime)/1000d);
 			
 			splitSingle = splitData[0].split("=");
-			goal.setTeam1(Integer.parseInt(splitSingle[1]));
-			
+			a = Integer.parseInt(splitSingle[1]);
 			splitSingle = splitData[1].split("=");
-			goal.setTeam2(Integer.parseInt(splitSingle[1]));
+			b = Integer.parseInt(splitSingle[1]);
+			
+			goal.setTeam1(a);
+			goal.setTeam2(b);
+			
+			if((a+b) > 0)
+				goals.add(goal);
 		}
-		
-		System.out.println(goal);
-		
-		goals.add(goal);
-		
+
 		repaint();
 	}
 	
 	@Override
 	public void reset() {
-		// Do what u have to do!
+		
+		sTime = System.currentTimeMillis();
+
+		goals.clear();
+		goals.add(new Goal());
 	}
 	
 	@Override
@@ -94,56 +92,65 @@ public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 		
 		super.paintComponents(g);
 		
+		int yOffset = 40;
+		int xOffset = 0;
+		int xStart = 90;
+		int yStart = 0;
+
 		Graphics2D g2 = (Graphics2D)g;
+		
+		g2.clipRect(0, 0, 800, 480);
 		
 		g2.drawImage(background, 0, 0, null);
 		
 		if(cMenu.isRunMode())
+			cMenu.drawMenu(g2);
+		
+		for(int i = 0; i < goals.size(); i++)
 		{
-
-//							g2d.setColor(new Color((Math.abs((r2-r1))/100f)*i + r2, g2, b2));
-			g2.setColor(cMenu.getColor());
-			g2.fill(menuShape);
-			g2.setColor(cMenu.getTextColor());
-			g2.drawString("MENUE", 5, 27);
+			g2.setColor(shapeColor);
+			g2.fill(new RoundRectangle2D.Double(xOffset + xStart, (i+yStart)*yOffset + 10, 160, 35, 13, 13));
 			
-			g2.setColor(cMenu.getColor());
-			g2.fill(restartShape);
-			g2.setColor(cMenu.getTextColor());
-			g2.drawString("RESTART", 5, (int)(restartShape.getY() + restartShape.getHeight()/2 + 5));
-	
-			g2.setColor(cMenu.getColor());
-			g2.fill(exitShape);
-			g2.setColor(cMenu.getTextColor());
-			g2.drawString("EXIT", 10, 480 - 12);
+			g2.setColor(Color.BLACK);
+			if((goals.get(i).getTeam1()+goals.get(i).getTeam2())==0)
+				g2.drawString("Team 1 gegen Team 2" .toString(), xOffset + xStart + 10, (i+yStart)*yOffset + 24);
+			else
+				g2.drawString("Tor in der "+goals.get(i).getSeconds()+" Sekunde" .toString(), xOffset + xStart + 10, (i+yStart)*yOffset + 24);
+
+			g2.drawString("Punktestand: "+goals.get(i).getTeam1()+":"+goals.get(i).getTeam2(), xOffset + xStart + 10, (i+yStart)*yOffset + 38);
+//				g2.drawString(goals.get(i).toString(), 575, i*30 + 30);
+
+			if((goals.get(i).getTeam1() == 5 || goals.get(i).getTeam2() == 5) && yStart == 0)
+			{
+				xOffset = 460;
+				yStart = -(i+1);
+			}	
+			
+//			System.out.println("goals.get(i)="+goals.get(i));
+			
+			if(goals.get(i).getTeam1() >= 10 || goals.get(i).getTeam2() >= 10)
+			{
+//				System.out.println("RESETTEN!");
+				reset();
+				
+				break;
+			}
 		}
-			
-			g2.setColor(Color.WHITE);
-			g2.drawString(goals.get(goals.size()-1).toString(), 575, 27);
 	}
 	
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseClicked(MouseEvent arg0) { }
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseEntered(MouseEvent arg0) { }
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseExited(MouseEvent arg0) { }
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		
-		if(menuShape.contains(arg0.getX(), arg0.getY()))
+		if(cMenu.getMenuShape().contains(arg0.getX(), arg0.getY()))
 		{
 			if(!cMenu.isRunMode())
 			{ 
@@ -163,7 +170,7 @@ public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 		}
 		else
 		{
-			if(exitShape.contains(arg0.getX(), arg0.getY()) && menu)
+			if(cMenu.getExitShape().contains(arg0.getX(), arg0.getY()) && menu)
 			{
 				if(JOptionPane.showConfirmDialog(null, "Visu beenden?", "Input", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 					System.exit(0);
@@ -172,12 +179,12 @@ public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 			}
 			else
 			{
-				if(restartShape.contains(arg0.getX(), arg0.getY()) && menu)
+				if(cMenu.getRestartShape().contains(arg0.getX(), arg0.getY()) && menu)
 				{
 					
 					if(JOptionPane.showConfirmDialog(null, "Spiel neu starten??", "Input", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
 					{
-						resetView();
+						reset();
 
 						cMenu.fadeOut();
 
@@ -191,8 +198,5 @@ public class VisuPanel extends JPanel implements VisuInterface, MouseListener {
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseReleased(MouseEvent arg0) { }
 }

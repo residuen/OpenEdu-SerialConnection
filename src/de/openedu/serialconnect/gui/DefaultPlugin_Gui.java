@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 import de.openedu.serialconnect.plugins.Plugin;
 import de.openedu.serialconnect.plugins.Plugin_ADC;
 import de.openedu.serialconnect.plugins.Plugin_IO;
+import de.openedu.serialconnect.plugins.Plugin_Kicker;
 import de.openedu.serialconnect.plugins.Plugin_Save2Hd;
 import de.openedu.serialconnect.plugins.Plugin_Segment;
 import de.openedu.serialconnect.plugins.Plugin_XYPlotter;
@@ -27,6 +28,8 @@ public class DefaultPlugin_Gui extends JPanel implements ActionListener, Message
 	public static final int DEFAULT_PLUGIN = 0;
 	public static final int M_ATMEGA_PLUGIN = 1;
 	public static final int M_8051_PLUGIN = 2;
+//	public static final int KICKER_PLUGIN = 3;
+	
 	
 	private int plugin = DEFAULT_PLUGIN;
 	
@@ -57,6 +60,7 @@ public class DefaultPlugin_Gui extends JPanel implements ActionListener, Message
 				System.out.println("2 defaultplugins");
 				p = new Plugin_Save2Hd();	plugins.add(p); panel.add((Component) p);
 				p = new Plugin_XYPlotter();	plugins.add(p); panel.add((Component) p);
+				p = new Plugin_Kicker();	plugins.add(p); panel.add((Component) p);
 					
 				break;
 			

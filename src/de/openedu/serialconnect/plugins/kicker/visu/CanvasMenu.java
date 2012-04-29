@@ -3,13 +3,34 @@ package de.openedu.serialconnect.plugins.kicker.visu;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics2D;
+import java.awt.geom.RoundRectangle2D;
 
 public class CanvasMenu {
 	
 	private Component c;
 	
-	private Color c1 = new Color(10284444);
-	private Color c2 = new Color(32768);
+	private RoundRectangle2D.Double menuShape = new RoundRectangle2D.Double(-13, -13, 75, 65, 25, 25);
+	public RoundRectangle2D.Double getRestartShape() {
+		return restartShape;
+	}
+
+	public void setRestartShape(RoundRectangle2D.Double restartShape) {
+		this.restartShape = restartShape;
+	}
+
+	public RoundRectangle2D.Double getMenuShape() {
+		return menuShape;
+	}
+
+	public RoundRectangle2D.Double getExitShape() {
+		return exitShape;
+	}
+
+	private RoundRectangle2D.Double restartShape = new RoundRectangle2D.Double(-13, menuShape.getY() + menuShape.getHeight() + 5, 75, 65, 25, 25);
+	private RoundRectangle2D.Double exitShape = new RoundRectangle2D.Double(-13, 480 - 65 + 13, 75, 65, 25, 25);
+
+	private Color buttonColor = new Color(10284444);
+	private Color backgroundColor = new Color(32768);
 	private Color text = Color.black;
 	private Color textColor = Color.black;
 	
@@ -28,6 +49,24 @@ public class CanvasMenu {
 		this.c = c;
 		
 		resetRGB();
+	}
+	
+	public void drawMenu(Graphics2D g2)
+	{
+		g2.setColor(getColor());
+		g2.fill(menuShape);
+		g2.setColor(getTextColor());
+		g2.drawString("MENUE", 5, 27);
+		
+		g2.setColor(getColor());
+		g2.fill(restartShape);
+		g2.setColor(getTextColor());
+		g2.drawString("RESTART", 5, (int)(restartShape.getY() + restartShape.getHeight()/2 + 5));
+
+		g2.setColor(getColor());
+		g2.fill(exitShape);
+		g2.setColor(getTextColor());
+		g2.drawString("EXIT", 10, 480 - 12);
 	}
 	
 	public Color getColor() { return color; }
@@ -91,13 +130,13 @@ public class CanvasMenu {
 	
 	private void resetRGB()
 	{
-		r1 = c1.getRed();
-		g1 = c1.getGreen();
-		b1 = c1.getBlue();
+		r1 = buttonColor.getRed();
+		g1 = buttonColor.getGreen();
+		b1 = buttonColor.getBlue();
 
-		r2 = c2.getRed();
-		g2 = c2.getGreen();
-		b2 = c2.getBlue();
+		r2 = backgroundColor.getRed();
+		g2 = backgroundColor.getGreen();
+		b2 = backgroundColor.getBlue();
 		
 		tr = text.getRed();
 		tg = text.getGreen();
@@ -113,4 +152,22 @@ public class CanvasMenu {
 	}
 
 	public boolean isRunMode() { return runMode; }
+	
+	public Color getButtonColor() {
+		return buttonColor;
+	}
+
+	public void setButtonColor(Color buttonColor) {
+		this.buttonColor = buttonColor;
+	}
+
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
+
 }
